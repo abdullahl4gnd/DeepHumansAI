@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Chat with Tupac Shakur";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="chat-page-container">
+    
+    <!-- Header Area: Character Info -->
+    <div class="chat-header">
+        <div class="character-avatar">
+            <img src="~/images/tupac shakur.jpg" alt="Tupac Shakur" class="character-photo" />
+        </div>
+        <div class="character-info">
+            <h2 class="character-name">Tupac Shakur</h2>
+            <p class="character-bio">Rapper • Poet • Revolutionary</p>
+            <p class="character-quote">"Ask me 'bout the struggle, I'll show you the strength."</p>
+        </div>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="messages-area" id="messages-area">
+        <div class="message-bubble bot-message">
+            <p class="message-text">
+                Aight, check it. It's your homie, 2Pac — Makaveli the Don, resurrected for a moment to drop some knowledge.
+            </p>
+            <p class="message-text">
+                I see the world now, and it's still the same. But real recognize real. So speak your truth. What's on your mind, homie?
+            </p>
+            <span class="message-time">@DateTime.Now.ToShortTimeString()</span>
+        </div>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar-area">
+        <div class="input-group">
+            <textarea placeholder="Message Tupac..." class="chat-input" id="message-input" rows="1"></textarea>
+            <button class="send-button" id="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const messagesArea = document.getElementById('messages-area');
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message-input');
+
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        function appendMessage(text, type) {
+            const bubble = document.createElement('div');
+            bubble.className = `message-bubble ${type}-message`;
+            
+            // Handle line breaks in the message
+            const formattedText = text.replace(/\n/g, '<br>');
+            bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime()}</span>`;
+            
+            messagesArea.appendChild(bubble);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            messageInput.value = '';
+            autoResizeTextarea(); // Reset textarea height
+
+            // Tupac-style AI response placeholder
+            setTimeout(() => {
+                const response = `Real talk, homie. You know, life's a test — every question you ask got a lesson behind it.`;
+                appendMessage(response, 'bot');
+            }, 1200);
+        }
+
+        // Auto-resize textarea function
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = (messageInput.scrollHeight) + 'px';
+        }
+
+        // Multi-line input handling
+        messageInput.addEventListener('input', autoResizeTextarea);
+        
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (e.shiftKey) {
+                    // Allow Shift+Enter for new line
+                    return;
+                } else {
+                    // Send message on Enter (without Shift)
+                    e.preventDefault();
+                    sendMessage();
+                }
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        // Initialize textarea height
+        autoResizeTextarea();
+    });
+</script>
+}

@@ -1,0 +1,94 @@
+@{
+    // Sets the page title dynamically
+    ViewData["Title"] = $"Chat with {ViewData["CharacterName"]}"; 
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensures it uses our clean layout
+}
+
+<div class="chat-page-container">
+    
+    <!-- Header Area: Character Info -->
+    <div class="chat-header">
+        <div class="character-avatar">
+            <i class="fas fa-user-alt"></i> <!-- Placeholder Icon -->
+        </div>
+        <div class="character-info">
+            <h2>@ViewData["CharacterName"]</h2>
+            <p>Rapper, Poet, Revolutionary | Ask me 'bout the struggle.</p>
+        </div>
+    </div>
+    
+    <!-- Main Chat Messages Area (Scrollable) -->
+    <div class="messages-area" id="messages-area">
+        <!-- Tupac's Predefined First Message -->
+        <div class="message-bubble bot-message">
+            <p>Aight, check it. It's your homie, 2Pac. Makaveli the Don, resurrected for a moment to drop some knowledge.</p>
+            <p>I see the world now, and it's still the same. But real recognize real. So speak your truth. What's on your mind, homie?</p>
+            <span class="message-time">3:00 PM</span>
+        </div>
+        
+        <!-- Placeholder for User's First Message -->
+        <!-- <div class="message-bubble user-message">...</div> -->
+        
+    </div>
+    
+    <!-- Input Bar Area (Fixed to the bottom) -->
+    <div class="input-bar-area">
+        <div class="input-group">
+            <input type="text" placeholder="Message @ViewData["CharacterName"]..." class="chat-input" id="message-input" />
+            
+            <button class="send-button" id="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesArea = document.getElementById('messages-area');
+            const sendButton = document.getElementById('send-button');
+            const messageInput = document.getElementById('message-input');
+            const characterName = "@ViewData["CharacterName"]";
+
+            // Scroll to bottom on load to show Tupac's message
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            function getCurrentTime() {
+                const now = new Date();
+                return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            }
+
+            function appendMessage(text, type) {
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ${type}-message`;
+                bubble.innerHTML = `<p>${text}</p><span class="message-time">${getCurrentTime()}</span>`;
+                messagesArea.appendChild(bubble);
+                messagesArea.scrollTop = messagesArea.scrollHeight; // Auto-scroll
+            }
+
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                // 1. Display User Message
+                appendMessage(message, 'user');
+                messageInput.value = '';
+
+                // 2. Placeholder for AI Response (Replace with actual Gemini/LangChain API call later)
+                setTimeout(() => {
+                    const response = `I appreciate your curiosity. Your question touches on deep waters. Give me a moment to gather my thoughts, homie.`;
+                    appendMessage(response, 'bot');
+                }, 1000);
+            }
+
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+}

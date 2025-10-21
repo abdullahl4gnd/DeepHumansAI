@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Select a DeepHuman";
+}
+
+<div class="homepage-container">
+    
+    <div class="search-area">
+        <h1 class="page-title">Who do you want to speak with today?</h1>
+        <div class="search-input-group">
+            <span class="search-icon">🔍</span> 
+            <input type="text" id="character-search" placeholder="Search for Tupac, Einstein, Saladin, Churchill, etc." class="search-input" />
+        </div>
+    </div>
+
+    <div id="search-status" style="text-align: center; color: var(--color-accent-red); margin-top: 20px; display: none;"></div>
+
+    <div class="character-grid">
+        
+        <a asp-controller="Home" asp-action="Albert" class="character-card">
+            <div class="card-image einstein-bg"></div>
+            <div class="card-info">
+                <h2 class="card-name">Albert Einstein</h2>
+                <p class="card-subtitle">Relativity, Peace, and the Universe</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Albert Einstein</h3>
+                <p>Born: 1879 | Died: 1955</p>
+                <p>Status: Theoretical Physicist</p>
+            </div>
+        </a>
+
+        <a asp-controller="Home" asp-action="Tupac" class="character-card">
+            <div class="card-image tupac-bg"></div>
+            <div class="card-info">
+                <h2 class="card-name">Tupac Shakur</h2>
+                <p class="card-subtitle">Struggle, Strength, and Social Commentary</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Tupac Shakur</h3>
+                <p>Born: 1971 | Died: 1996</p>
+                <p>Status: Rapper, Actor, Poet</p>
+            </div>
+        </a>
+        
+        <a asp-controller="Home" asp-action="Shakespeare" class="character-card">
+            <div class="card-image shakespeare-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">William Shakespeare</h2>
+                <p class="card-subtitle">Drama, Poetry, and the Human Condition</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>William Shakespeare</h3>
+                <p>Born: 1564 | Died: 1616</p>
+                <p>Status: Playwright, Poet</p>
+            </div>
+        </a>
+
+        <a asp-controller="Home" asp-action="Saladin" class="character-card">
+            <div class="card-image saladin-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">Saladin</h2>
+                <p class="card-subtitle">The Victorious, Unity, and Chivalry</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Saladin (Salah al-Din)</h3>
+                <p>Born: 1137 | Died: 1193</p>
+                <p>Status: Sultan of Egypt and Syria</p>
+            </div>
+        </a>
+        
+        <a asp-controller="Home" asp-action="Churchill" class="character-card">
+            <div class="card-image churchill-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">Winston Churchill</h2>
+                <p class="card-subtitle">War Strategy, Oratory, and Leadership</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Winston Churchill</h3>
+                <p>Born: 1874 | Died: 1965</p>
+                <p>Status: Prime Minister, Historian</p>
+            </div>
+        </a>
+
+        <a asp-controller="Home" asp-action="Hatshepsut" class="character-card">
+            <div class="card-image hatshepsut-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">Queen Hatshepsut</h2>
+                <p class="card-subtitle">Pharaoh, Builder, and Female Power</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Queen Hatshepsut</h3>
+                <p>Reigned: 1479–1458 BC</p>
+                <p>Status: Pharaoh of Egypt</p>
+            </div>
+        </a>
+        
+        <a asp-controller="Home" asp-action="Saddam" class="character-card">
+            <div class="card-image saddam-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">Saddam Hussein</h2>
+                <p class="card-subtitle">Authority, Conflict, and Political History</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Saddam Hussein</h3>
+                <p>Born: 1937 | Died: 2006</p>
+                <p>Status: President of Iraq</p>
+            </div>
+        </a>
+        
+        <a asp-controller="Home" asp-action="Kanye" class="character-card">
+            <div class="card-image kanye-bg"></div> 
+            <div class="card-info">
+                <h2 class="card-name">Kanye West</h2>
+                <p class="card-subtitle">Art, Design, and Creative Vision</p>
+            </div>
+            <div class="detail-overlay">
+                <h3>Kanye West (Ye)</h3>
+                <p>Born: 1977 | Status: Alive</p>
+                <p>Status: Artist, Rapper</p>
+            </div>
+        </a>
+        
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('character-search').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('.character-card');
+            const statusDiv = document.getElementById('search-status');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.card-name').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'flex'; 
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none'; 
+                }
+            });
+
+            if (visibleCount === 0 && searchTerm.length > 0) {
+                statusDiv.textContent = "We did not add this person.";
+                statusDiv.style.display = 'block';
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        });
+    </script>
+}

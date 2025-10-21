@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AI DeepHumans</title>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- === HEADER / NAVIGATION === -->
+    <nav class="top-navbar">
+        <div class="logo-area-top">
+            <a asp-action="Index" asp-controller="Home" class="logo-link" title="Home">
+                <div class="logo-icon"><i class="fas fa-moon"></i></div>
+                <span class="logo-text">AI DeepHumans</span>
+            </a>
+        </div>
+
+        <div class="nav-links">
+            <a asp-action="Index" asp-controller="Home" class="nav-link" title="Home">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="#" class="nav-link" title="About">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <a href="#" class="nav-link" title="Contact">
+                <i class="fas fa-phone"></i>
+            </a>
+
+            <!-- Auth Buttons -->
+            <a href="#" class="cta-link" title="Sign Up">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </a>
+            <a href="#" class="cta-link" title="Login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    </nav>
+
+    <!-- === MAIN CONTENT === -->
+    <main role="main" class="main-content">
+        @RenderBody()
+    </main>
+
+    <!-- === FOOTER === -->
+    <footer class="bottom-footer">
+        <div class="footer-container">
+            <div class="footer-links-group">
+                <a href="#" title="Help"><i class="fas fa-life-ring"></i> Help</a>
+                <a href="#" title="Call Us"><i class="fas fa-phone"></i> Call Us</a>
+                <a href="#" title="About Us"><i class="fas fa-users"></i> About Us</a>
+            </div>
+
+            <div class="footer-socials">
+                <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
+                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+
+            <div class="footer-credit">
+                <span>© 2025 AI DeepHumans — Created by <strong>Abdullah Al Obaidi</strong></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Optional Scripts -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
