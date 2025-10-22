@@ -1,0 +1,177 @@
+@*
+    This is the Login page for the DeepHumans project.
+    It uses the dark theme, red accents, and modern card-based design
+    found in the site.css file.
+*@
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Use the existing layout
+}
+
+<style>
+    /* Specific styles for the Auth Forms - Reusing the styles from SignUp */
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--top-nav-height) - var(--footer-height));
+        padding: 40px 20px;
+    }
+
+    .auth-card {
+        background-color: var(--color-panel-bg);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--color-border-red);
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .auth-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 25px rgba(255, 0, 0, 0.5);
+    }
+
+    .auth-card h2 {
+        color: var(--color-text-primary);
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 300;
+        font-size: 2em;
+        border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        padding-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        color: var(--color-text-secondary);
+        font-size: 0.9em;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #000;
+        border: 1px solid #444;
+        color: var(--color-text-primary);
+        border-radius: 5px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: var(--color-accent-red);
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        outline: none;
+        background-color: #0a0a0a;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--color-accent-red);
+        color: var(--color-text-primary);
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #ff3333;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        transform: translateY(-1px);
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.95em;
+    }
+
+    .auth-links a {
+        color: var(--color-accent-red);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .auth-links a:hover {
+        color: #ff6666;
+        text-decoration: underline;
+    }
+
+    .forgot-password {
+        display: block;
+        text-align: right;
+        margin-top: -10px;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+    }
+
+    .forgot-password a {
+        color: var(--color-text-secondary);
+        transition: color 0.3s;
+    }
+
+    .forgot-password a:hover {
+        color: var(--color-accent-red);
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Log In to AI DeepHumans</h2>
+        <form id="loginForm" onsubmit="return validateLogin()">
+            <div class="form-group">
+                <label for="usernameOrEmail">Username or Email</label>
+                <input type="text" id="usernameOrEmail" class="form-control" placeholder="johndoe123 or john.doe@gmail.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            
+            <span class="forgot-password">
+                <a href="/Account/ForgotPassword">Forgot Password?</a>
+            </span>
+
+            <button type="submit" class="btn-submit">Log In</button>
+        </form>
+
+        <div class="auth-links">
+            Don't have an account? <a href="/Account/SignUp">Sign Up</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function validateLogin() {
+            // In a real application, you would send this data to a server for authentication.
+            // For this example, we just show an alert and prevent the default submission.
+            
+            const usernameOrEmail = document.getElementById('usernameOrEmail').value;
+            const password = document.getElementById('password').value;
+
+            if (usernameOrEmail && password) {
+                alert('Login attempt successful (Simulated)!');
+            } else {
+                alert('Please enter both username/email and password.');
+            }
+            
+            // Return false to prevent the form from actually submitting and reloading the page
+            // since this is a static code example.
+            return false; 
+        }
+    </script>
+}
+

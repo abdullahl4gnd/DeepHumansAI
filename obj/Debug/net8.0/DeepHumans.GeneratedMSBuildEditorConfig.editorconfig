@@ -18,6 +18,18 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\wtpir\Documents\DeepHumans
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/wtpir/Documents/DeepHumans/Views/Home/Account/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2NvdW50XEZvcmdvdFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/wtpir/Documents/DeepHumans/Views/Home/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2NvdW50XExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/wtpir/Documents/DeepHumans/Views/Home/Account/SignUp.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2NvdW50XFNpZ25VcC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/wtpir/Documents/DeepHumans/Views/Home/albert.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxhbGJlcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
