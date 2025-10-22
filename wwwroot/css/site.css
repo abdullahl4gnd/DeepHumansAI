@@ -602,3 +602,146 @@ body {
         padding: 15px 0;
     }
 }
+
+/* === Authentication UI Styling === */
+.alert.alert-warning {
+    background-color: rgba(255, 165, 0, 0.2); /* Orange with transparency */
+    border-color: var(--color-accent-red);
+    color: var(--color-text-primary);
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    max-width: 600px;
+}
+
+.alert.alert-warning a {
+    color: var(--color-accent-red);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.alert.alert-warning a:hover {
+    color: #ff3333;
+}
+
+/* Adjustments for Identity UI forms */
+.identity-page-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: var(--color-panel-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-border-red);
+}
+
+.identity-page-container h1, .identity-page-container h2 {
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.identity-page-container .form-group label {
+    color: var(--color-text-secondary);
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.identity-page-container .form-control {
+    background-color: #333;
+    border: 1px solid #555;
+    color: var(--color-text-primary);
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.identity-page-container .form-control:focus {
+    border-color: var(--color-accent-red);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}
+
+.identity-page-container .btn-primary {
+    background-color: var(--color-accent-red);
+    border-color: var(--color-border-red);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.identity-page-container .btn-primary:hover {
+    background-color: #ff3333;
+    border-color: #a80000;
+}
+
+.identity-page-container .text-danger {
+    color: #ff6666;
+    font-size: 0.9em;
+}
+
+.identity-page-container p a {
+    color: var(--color-accent-red);
+    text-decoration: none;
+}
+
+.identity-page-container p a:hover {
+    text-decoration: underline;
+}
+
+.identity-page-container .checkbox label {
+    color: var(--color-text-secondary);
+}
+
+.identity-page-container .checkbox input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Specific styling for the _LoginPartial component */
+.top-navbar .nav-links .cta-link {
+    margin-left: 10px;
+    white-space: nowrap; /* Prevent wrapping for login/signup buttons */
+}
+
+.top-navbar .nav-links #logoutForm button {
+    background-color: transparent;
+    border: none;
+    color: var(--color-text-icon);
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: color 0.3s, background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-navbar .nav-links #logoutForm button:hover {
+    color: var(--color-accent-red);
+    background-color: rgba(255, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.top-navbar .nav-links #manage {
+    color: var(--color-accent-red);
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    transition: color 0.3s, background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-navbar .nav-links #manage:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+

@@ -1,94 +1,160 @@
 @{
-    // Sets the page title dynamically
-    ViewData["Title"] = $"Chat with {ViewData["CharacterName"]}"; 
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensures it uses our clean layout
+    ViewData["Title"] = "Chat with Kanye West";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 <div class="chat-page-container">
-    
+
     <!-- Header Area: Character Info -->
     <div class="chat-header">
         <div class="character-avatar">
-            <i class="fas fa-user-alt"></i> <!-- Placeholder Icon -->
+            <img src="~/images/kanye west.jpg" alt="Kanye West" class="character-photo" />
         </div>
         <div class="character-info">
-            <h2>@ViewData["CharacterName"]</h2>
-            <p>Rapper, Poet, Revolutionary | Ask me 'bout the struggle.</p>
+            <h2 class="character-name">Kanye West</h2>
+            <p class="character-bio">Rapper • Producer • Fashion Designer</p>
+            <p class="character-quote">"I am God's vessel. But my greatest pain in life is that I will never be able to see myself perform live."</p>
         </div>
     </div>
-    
-    <!-- Main Chat Messages Area (Scrollable) -->
+
+    <!-- Main Chat Area -->
     <div class="messages-area" id="messages-area">
-        <!-- Tupac's Predefined First Message -->
-        <div class="message-bubble bot-message">
-            <p>Aight, check it. It's your homie, 2Pac. Makaveli the Don, resurrected for a moment to drop some knowledge.</p>
-            <p>I see the world now, and it's still the same. But real recognize real. So speak your truth. What's on your mind, homie?</p>
-            <span class="message-time">3:00 PM</span>
-        </div>
-        
-        <!-- Placeholder for User's First Message -->
-        <!-- <div class="message-bubble user-message">...</div> -->
-        
+        @if (!SignInManager.IsSignedIn(User))
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Kanye West.
+            </div>
+        }
     </div>
-    
-    <!-- Input Bar Area (Fixed to the bottom) -->
+
+    <!-- Input Bar -->
     <div class="input-bar-area">
-        <div class="input-group">
-            <input type="text" placeholder="Message @ViewData["CharacterName"]..." class="chat-input" id="message-input" />
-            
-            <button class="send-button" id="send-button">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="input-group">
+                <textarea placeholder="Message Kanye West..." class="chat-input" id="message-input" rows="1"></textarea>
+                <button class="send-button" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="input-group">
+                <textarea placeholder="Log in to send messages..." class="chat-input" rows="1" disabled></textarea>
+                <button class="send-button" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        }
     </div>
-    
 </div>
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messagesArea = document.getElementById('messages-area');
-            const sendButton = document.getElementById('send-button');
-            const messageInput = document.getElementById('message-input');
-            const characterName = "@ViewData["CharacterName"]";
+        document.addEventListener("DOMContentLoaded", function () {
+            const messagesArea = document.getElementById("messages-area");
+            const sendButton = document.getElementById("send-button");
+            const messageInput = document.getElementById("message-input");
+            const characterName = "Kanye West"; // This should match the characterName in your controller
 
-            // Scroll to bottom on load to show Tupac's message
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-
-            function getCurrentTime() {
-                const now = new Date();
-                return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            function getCurrentTime(dateString) {
+                const date = new Date(dateString);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
             }
 
-            function appendMessage(text, type) {
-                const bubble = document.createElement('div');
+            function appendMessage(text, type, timestamp) {
+                const bubble = document.createElement("div");
                 bubble.className = `message-bubble ${type}-message`;
-                bubble.innerHTML = `<p>${text}</p><span class="message-time">${getCurrentTime()}</span>`;
+
+                const formattedText = text.replace(/\n/g, "<br>");
+                bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime(timestamp)}</span>`;
+
                 messagesArea.appendChild(bubble);
-                messagesArea.scrollTop = messagesArea.scrollHeight; // Auto-scroll
+                messagesArea.scrollTop = messagesArea.scrollHeight;
             }
 
-            function sendMessage() {
+            async function loadChatHistory() {
+                if (!@SignInManager.IsSignedIn(User).ToString().ToLower()) return;
+
+                try {
+                    const response = await fetch(`/Chat/GetChatHistory?characterName=${encodeURIComponent(characterName)}`);
+                    if (response.ok) {
+                        const history = await response.json();
+                        messagesArea.innerHTML = ""; // Clear existing messages
+                        history.forEach(msg => {
+                            appendMessage(msg.messageContent, msg.isUser ? "user" : "bot", msg.timestamp);
+                        });
+                    } else {
+                        console.error("Failed to load chat history:", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error loading chat history:", error);
+                }
+            }
+
+            async function sendMessage() {
                 const message = messageInput.value.trim();
                 if (!message) return;
 
-                // 1. Display User Message
-                appendMessage(message, 'user');
-                messageInput.value = '';
+                appendMessage(message, "user", new Date().toISOString());
+                messageInput.value = "";
+                autoResizeTextarea();
 
-                // 2. Placeholder for AI Response (Replace with actual Gemini/LangChain API call later)
-                setTimeout(() => {
-                    const response = `I appreciate your curiosity. Your question touches on deep waters. Give me a moment to gather my thoughts, homie.`;
-                    appendMessage(response, 'bot');
-                }, 1000);
+                try {
+                    const response = await fetch("/Chat/SendMessage", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ characterName: characterName, messageContent: message })
+                    });
+
+                    if (response.ok) {
+                        // For now, a simple bot response. In a real app, this would come from an AI service.
+                        setTimeout(() => {
+                            const botResponse = `Yo, ${characterName} just dropped some truth on that.`;
+                            appendMessage(botResponse, "bot", new Date().toISOString());
+                        }, 1000);
+                    } else {
+                        console.error("Failed to send message:", response.statusText);
+                        // Optionally, revert the message or show an error to the user
+                    }
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
             }
 
-            sendButton.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
+            function autoResizeTextarea() {
+                if (messageInput) {
+                    messageInput.style.height = "auto";
+                    messageInput.style.height = (messageInput.scrollHeight) + "px";
                 }
-            });
+            }
+
+            if (sendButton && messageInput) {
+                sendButton.addEventListener("click", sendMessage);
+
+                messageInput.addEventListener("input", autoResizeTextarea);
+
+                messageInput.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        if (e.shiftKey) {
+                            return;
+                        } else {
+                            e.preventDefault();
+                            sendMessage();
+                        }
+                    }
+                });
+            }
+
+            loadChatHistory();
+            autoResizeTextarea();
         });
     </script>
 }

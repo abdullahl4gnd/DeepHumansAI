@@ -3,8 +3,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 <div class="chat-page-container">
-    
+
     <!-- Header Area: Character Info -->
     <div class="chat-header">
         <div class="character-avatar">
@@ -19,95 +23,138 @@
 
     <!-- Main Chat Area -->
     <div class="messages-area" id="messages-area">
-        <div class="message-bubble bot-message">
-            <p class="message-text">
-                Aight, check it. It's your homie, 2Pac — Makaveli the Don, resurrected for a moment to drop some knowledge.
-            </p>
-            <p class="message-text">
-                I see the world now, and it's still the same. But real recognize real. So speak your truth. What's on your mind, homie?
-            </p>
-            <span class="message-time">@DateTime.Now.ToShortTimeString()</span>
-        </div>
+        @if (!SignInManager.IsSignedIn(User))
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Tupac Shakur.
+            </div>
+        }
     </div>
 
     <!-- Input Bar -->
     <div class="input-bar-area">
-        <div class="input-group">
-            <textarea placeholder="Message Tupac..." class="chat-input" id="message-input" rows="1"></textarea>
-            <button class="send-button" id="send-button">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="input-group">
+                <textarea placeholder="Message Tupac..." class="chat-input" id="message-input" rows="1"></textarea>
+                <button class="send-button" id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="input-group">
+                <textarea placeholder="Log in to send messages..." class="chat-input" rows="1" disabled></textarea>
+                <button class="send-button" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        }
     </div>
 </div>
 
 @section Scripts {
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const messagesArea = document.getElementById('messages-area');
-        const sendButton = document.getElementById('send-button');
-        const messageInput = document.getElementById('message-input');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const messagesArea = document.getElementById('messages-area');
+            const sendButton = document.getElementById('send-button');
+            const messageInput = document.getElementById('message-input');
+            const characterName = "Tupac Shakur"; // This should match the characterName in your controller
 
-        messagesArea.scrollTop = messagesArea.scrollHeight;
+            function getCurrentTime(dateString) {
+                const date = new Date(dateString);
+                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+            }
 
-        function getCurrentTime() {
-            const now = new Date();
-            return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-        }
+            function appendMessage(text, type, timestamp) {
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ${type}-message`;
 
-        function appendMessage(text, type) {
-            const bubble = document.createElement('div');
-            bubble.className = `message-bubble ${type}-message`;
-            
-            // Handle line breaks in the message
-            const formattedText = text.replace(/\n/g, '<br>');
-            bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime()}</span>`;
-            
-            messagesArea.appendChild(bubble);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
+                const formattedText = text.replace(/\n/g, '<br>');
+                bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime(timestamp)}</span>`;
 
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
+                messagesArea.appendChild(bubble);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
 
-            appendMessage(message, 'user');
-            messageInput.value = '';
-            autoResizeTextarea(); // Reset textarea height
+            async function loadChatHistory() {
+                if (!@SignInManager.IsSignedIn(User).ToString().ToLower()) return;
 
-            // Tupac-style AI response placeholder
-            setTimeout(() => {
-                const response = `Real talk, homie. You know, life's a test — every question you ask got a lesson behind it.`;
-                appendMessage(response, 'bot');
-            }, 1200);
-        }
-
-        // Auto-resize textarea function
-        function autoResizeTextarea() {
-            messageInput.style.height = 'auto';
-            messageInput.style.height = (messageInput.scrollHeight) + 'px';
-        }
-
-        // Multi-line input handling
-        messageInput.addEventListener('input', autoResizeTextarea);
-        
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                if (e.shiftKey) {
-                    // Allow Shift+Enter for new line
-                    return;
-                } else {
-                    // Send message on Enter (without Shift)
-                    e.preventDefault();
-                    sendMessage();
+                try {
+                    const response = await fetch(`/Chat/GetChatHistory?characterName=${encodeURIComponent(characterName)}`);
+                    if (response.ok) {
+                        const history = await response.json();
+                        messagesArea.innerHTML = ''; // Clear existing messages
+                        history.forEach(msg => {
+                            appendMessage(msg.messageContent, msg.isUser ? 'user' : 'bot', msg.timestamp);
+                        });
+                    } else {
+                        console.error('Failed to load chat history:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error loading chat history:', error);
                 }
             }
+
+            async function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                appendMessage(message, 'user', new Date().toISOString());
+                messageInput.value = '';
+                autoResizeTextarea();
+
+                try {
+                    const response = await fetch('/Chat/SendMessage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ characterName: characterName, messageContent: message })
+                    });
+
+                    if (response.ok) {
+                        // For now, a simple bot response. In a real app, this would come from an AI service.
+                        setTimeout(() => {
+                            const botResponse = `Understood, ${characterName} heard you loud and clear.`;
+                            appendMessage(botResponse, 'bot', new Date().toISOString());
+                        }, 1000);
+                    } else {
+                        console.error('Failed to send message:', response.statusText);
+                        // Optionally, revert the message or show an error to the user
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            }
+
+            function autoResizeTextarea() {
+                if (messageInput) {
+                    messageInput.style.height = 'auto';
+                    messageInput.style.height = (messageInput.scrollHeight) + 'px';
+                }
+            }
+
+            if (sendButton && messageInput) {
+                sendButton.addEventListener('click', sendMessage);
+
+                messageInput.addEventListener('input', autoResizeTextarea);
+
+                messageInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        if (e.shiftKey) {
+                            return;
+                        } else {
+                            e.preventDefault();
+                            sendMessage();
+                        }
+                    }
+                });
+            }
+            
+            loadChatHistory();
+            autoResizeTextarea();
         });
-
-        sendButton.addEventListener('click', sendMessage);
-
-        // Initialize textarea height
-        autoResizeTextarea();
-    });
-</script>
+    </script>
 }
