@@ -542,3 +542,4 @@ C:\Users\wtpir\Documents\DeepHumans\obj\Debug\net8.0\refint\DeepHumans.dll
 C:\Users\wtpir\Documents\DeepHumans\obj\Debug\net8.0\DeepHumans.pdb
 C:\Users\wtpir\Documents\DeepHumans\obj\Debug\net8.0\DeepHumans.genruntimeconfig.cache
 C:\Users\wtpir\Documents\DeepHumans\obj\Debug\net8.0\ref\DeepHumans.dll
+C:\Users\wtpir\Documents\DeepHumans\obj\Debug\net8.0\DeepHumans.sourcelink.json
