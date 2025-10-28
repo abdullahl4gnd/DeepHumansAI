@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "55y2CCIU+6CnTFkPLs4/iz+0jmDScYQbyrWy5NOLHEA=",
+  "Hash": "VFF8uZ8W1AtcRuOtW2t3V2ZFy79Xq0qk6j/jCrztROo=",
   "Source": "DeepHumans",
   "BasePath": "_content/DeepHumans",
   "Mode": "Default",
@@ -1269,6 +1269,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\kaney west.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\wtpir\\Documents\\DeepHumans\\wwwroot\\images\\Mustafa Kemal Ataturk.jpg",
+      "SourceId": "DeepHumans",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\wtpir\\Documents\\DeepHumans\\wwwroot\\",
+      "BasePath": "_content/DeepHumans",
+      "RelativePath": "images/Mustafa Kemal Ataturk.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Mustafa Kemal Ataturk.jpg"
     },
     {
       "Identity": "C:\\Users\\wtpir\\Documents\\DeepHumans\\wwwroot\\images\\queen hatshepsut.jpg",

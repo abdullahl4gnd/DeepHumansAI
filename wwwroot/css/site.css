@@ -383,6 +383,7 @@ body {
 .hatshepsut-bg { background-image: url('/images/queen hatshepsut.jpg'); }
 .saddam-bg { background-image: url('/images/sadam hussain.jpg'); }
 .kanye-bg { background-image: url('/images/kaney west.jpg'); }
+.ataturk-bg { background-image: url('/images/Mustafa Kemal Ataturk.jpg'); }
 
 /* === CHAT INTERFACE STYLING === */
 .chat-page-container {
@@ -639,9 +640,11 @@ body {
     color: var(--color-text-primary);
     text-align: center;
     margin-bottom: 30px;
+    font-size: 2.2em; /* Make headings bigger */
 }
 
 .identity-page-container .form-group label {
+    font-size: 1.1em; /* Make labels bigger */
     color: var(--color-text-secondary);
     font-weight: bold;
     margin-bottom: 5px;
@@ -653,9 +656,10 @@ body {
     border: 1px solid #555;
     color: var(--color-text-primary);
     border-radius: 5px;
-    padding: 10px;
+    padding: 12px; /* Increase padding for bigger input */
+    font-size: 1.1em; /* Make input text bigger */
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* Increase margin for spacing */
 }
 
 .identity-page-container .form-control:focus {
@@ -667,11 +671,12 @@ body {
     background-color: var(--color-accent-red);
     border-color: var(--color-border-red);
     color: white;
-    padding: 10px 20px;
+    padding: 12px 20px; /* Make button bigger */
+    font-size: 1.1em; /* Make button text bigger */
     border-radius: 5px;
     font-weight: bold;
     width: 100%;
-    transition: background-color 0.3s, border-color 0.3s;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
 }
 
 .identity-page-container .btn-primary:hover {
@@ -687,6 +692,9 @@ body {
 .identity-page-container p a {
     color: var(--color-accent-red);
     text-decoration: none;
+    font-size: 1.05em; /* Make links slightly bigger */
+    display: block; /* Make links take full width for better click area */
+    margin-top: 10px;
 }
 
 .identity-page-container p a:hover {
@@ -699,6 +707,102 @@ body {
 
 .identity-page-container .checkbox input[type="checkbox"] {
     margin-right: 5px;
+}
+
+/* === Identity Manage Page Styling === */
+.manage-page-container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: var(--color-panel-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-border-red);
+}
+
+.manage-page-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-red);
+    padding-bottom: 15px;
+}
+
+.manage-page-container h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.manage-grid {
+    display: flex;
+    gap: 30px;
+}
+
+.manage-nav-column {
+    flex: 0 0 250px;
+}
+
+.manage-body-column {
+    flex: 1;
+}
+
+.nav-pills.flex-column {
+    background-color: var(--color-dark-bg);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #333;
+}
+
+.nav-pills .nav-item {
+    margin-bottom: 5px;
+}
+
+.nav-pills .nav-link {
+    color: var(--color-text-primary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 1.1em;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #333;
+    color: var(--color-accent-red);
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .nav-link.active:hover {
+    background-color: var(--color-accent-red);
+    color: white;
+    font-weight: bold;
+}
+
+/* Form styling within manage pages */
+.manage-body-column .form-floating label {
+    color: var(--color-text-secondary);
+}
+
+.manage-body-column .form-control {
+    background-color: #333;
+    border: 1px solid #555;
+    color: var(--color-text-primary);
+}
+
+.manage-body-column .form-control:focus {
+    border-color: var(--color-accent-red);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}
+
+.manage-body-column button.btn-primary {
+    background-color: var(--color-accent-red);
+    border-color: var(--color-border-red);
+    transition: background-color 0.3s;
+}
+
+.manage-body-column button.btn-primary:hover {
+    background-color: #ff3333;
+    border-color: #a80000;
 }
 
 /* Specific styling for the _LoginPartial component */
@@ -729,7 +833,7 @@ body {
 }
 
 .top-navbar .nav-links #manage {
-    color: var(--color-accent-red);
+    color: var(--color-text-primary); /* Changed from red to primary text color */
     font-weight: bold;
     text-decoration: none;
     padding: 8px 15px;
@@ -741,7 +845,245 @@ body {
 }
 
 .top-navbar .nav-links #manage:hover {
+    color: var(--color-accent-red); /* Keep red on hover */
     background-color: rgba(255, 0, 0, 0.1);
     transform: translateY(-2px);
 }
 
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.card {
+    border-width: 1.5px !important;
+}
+
+.form-control {
+    background-color: #1a1a1a !important;
+    color: #fff !important;
+    border: 1px solid #b71c1c !important;
+    border-radius: 8px !important;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #ff3b3b !important;
+    box-shadow: 0 0 8px rgba(183, 28, 28, 0.5) !important;
+}
+
+.btn-danger {
+    background-color: #b71c1c !important;
+    border: none !important;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f !important;
+}
+
+.text-muted {
+    color: #aaa !important;
+}
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Sidebar buttons */
+.btn-outline-danger {
+    border: 1px solid #b71c1c;
+    background-color: transparent;
+    color: white !important;
+    transition: 0.3s;
+}
+
+.btn-outline-danger:hover {
+    background-color: #b71c1c !important;
+    color: white !important;
+}
+
+/* Form fields */
+.form-control {
+    border: 1px solid #b71c1c !important;
+    border-radius: 8px !important;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #ff3b3b !important;
+    box-shadow: 0 0 8px rgba(255, 59, 59, 0.5) !important;
+    background-color: #1a1a1a !important;
+}
+
+/* Card border */
+.card {
+    border-width: 1.5px !important;
+}
+
+/* Button */
+.btn-danger {
+    background-color: #b71c1c !important;
+    border: none !important;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f !important;
+}
+/* === MANAGE ACCOUNT PAGE – FIXED CLEAN DARK RED STYLE === */
+.manage-page-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: var(--color-panel-bg);
+    border: 1px solid var(--color-border-red);
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.1);
+}
+
+/* Headings */
+.manage-page-container h1 {
+    font-size: 2.4em;
+    font-weight: bold;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border-red);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+.manage-page-container h2 {
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Two-column grid */
+.manage-grid {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* === Sidebar Navigation === */
+.manage-nav-column {
+    flex: 0 0 240px;
+    background-color: #0f0f0f;
+    border: 1px solid var(--color-border-red);
+    border-radius: 10px;
+    padding: 25px 20px;
+    height: fit-content;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+}
+
+.manage-nav-column h4 {
+    color: var(--color-accent-red);
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.manage-nav-column a,
+.manage-nav-column button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-red);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 1.05em;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.manage-nav-column a:hover,
+.manage-nav-column button:hover {
+    background-color: var(--color-accent-red);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.manage-nav-column a.active,
+.manage-nav-column button.active {
+    background-color: var(--color-accent-red);
+    color: #fff;
+    font-weight: bold;
+}
+
+/* === Main Form Area === */
+.manage-body-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+.manage-body-column label {
+    color: #bbb;
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.manage-body-column .form-control {
+    background-color: #111;
+    color: #fff;
+    border: 1px solid var(--color-border-red);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1.05em;
+    transition: 0.3s ease;
+}
+
+.manage-body-column .form-control:focus {
+    border-color: var(--color-accent-red);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+}
+
+/* Save Button */
+.manage-body-column .btn-save {
+    display: block;
+    width: 50%;
+    margin: 25px auto 10px auto;
+    background-color: var(--color-accent-red);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    padding: 12px;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.manage-body-column .btn-save:hover {
+    background-color: #ff3333;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Footer Text */
+.manage-footer {
+    text-align: center;
+    color: #999;
+    font-size: 0.9em;
+    border-top: 1px solid var(--color-border-red);
+    padding-top: 10px;
+    margin-top: 30px;
+}
+
+/* === Responsive Layout === */
+@media (max-width: 768px) {
+    .manage-grid {
+        flex-direction: column;
+    }
+
+    .manage-nav-column {
+        width: 100%;
+    }
+
+    .manage-body-column .btn-save {
+        width: 100%;
+    }
+}

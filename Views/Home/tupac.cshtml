@@ -29,6 +29,13 @@
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Tupac Shakur.
             </div>
         }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">What up, world? I'm Tupac Shakur, a voice for the voiceless, a poet of the struggle, and a revolutionary spirit. My music and my words reflect the raw reality of life and the fight for change. Remember: **"Ask me 'bout the struggle, I'll show you the strength."** I'm here to talk about social commentary, the power of art, or anything real. What's on your mind today?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
+            </div>
+        }
     </div>
 
     <!-- Input Bar -->

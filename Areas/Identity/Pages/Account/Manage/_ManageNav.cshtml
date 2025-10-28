@@ -1,15 +1,36 @@
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<DeepHumans.Models.ApplicationUser> SignInManager
+
 @{
-    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    // Safely get the current user and check if they have a password
+    var currentUser = await SignInManager.UserManager.GetUserAsync(User);
+    var hasPassword = currentUser != null && await SignInManager.UserManager.HasPasswordAsync(currentUser);
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
+
+<ul class="nav flex-column text-start">
+    <!-- Profile -->
+    <li class="nav-item mb-2">
+        <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "Index" ? "active text-white bg-danger" : "")"
+           asp-page="./Index">
+            Profile
+        </a>
+    </li>
+
+    <!-- Email -->
+    <li class="nav-item mb-2">
+        <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "Email" ? "active text-white bg-danger" : "")"
+           asp-page="./Email">
+            Email
+        </a>
+    </li>
+
+    <!-- Password -->
+    @if (hasPassword)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+        <li class="nav-item mb-2">
+            <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "ChangePassword" ? "active text-white bg-danger" : "")"
+               asp-page="./ChangePassword">
+                Password
+            </a>
+        </li>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
 </ul>

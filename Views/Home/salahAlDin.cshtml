@@ -12,7 +12,7 @@
     <!-- Header Area: Character Info -->
     <div class="chat-header">
         <div class="character-avatar">
-            <img src="~/images/salah al-din.jpg" alt="Salah Al-Din" class="character-photo" />
+            <img src="~/images/salah al din.jpg" alt="Salah Al-Din" class="character-photo" />
         </div>
         <div class="character-info">
             <h2 class="character-name">Salah Al-Din</h2>
@@ -27,6 +27,13 @@
         {
             <div class="alert alert-warning text-center" role="alert">
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Salah Al-Din.
+            </div>
+        }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">Peace be upon you. I am Salah al-Din Yusuf ibn Ayyub, known to many as Saladin. I was the first Sultan of Egypt and Syria, and a champion of Islamic unity and chivalry during the Crusades. My belief is that **"Victory is not in the absence of struggle, but in the steadfastness of faith."** I am ready to discuss military strategy, the principles of justice, or the history of our lands. What is your query?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
             </div>
         }
     </div>

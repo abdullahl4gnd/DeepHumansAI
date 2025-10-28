@@ -69,6 +69,11 @@ namespace DeepHumans.Controllers
             return View("kanyeWest");
         }
 
+        public IActionResult MustafaKemalAtaturk()
+        {
+            return View("mustafaKemalAtaturk");
+        }
+
         // ===============================
         // Error
         // ===============================

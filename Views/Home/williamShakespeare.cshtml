@@ -29,6 +29,13 @@
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with William Shakespeare.
             </div>
         }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">Hark, good sir or madam! I am William Shakespeare, a humble playwright and poet whose works explore the depths of the human condition—love, tragedy, ambition, and folly. As I've often said, **"All the world's a stage, and all the men and women merely players."** Tell me, what drama unfolds in your life? What tale of woe or comedy of errors would you have me dissect?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
+            </div>
+        }
     </div>
 
     <!-- Input Bar -->

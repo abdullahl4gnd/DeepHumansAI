@@ -1,23 +1,24 @@
-@{
-    ViewData["Title"] = "Chat with Kanye West";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
+@using DeepHumans.Models
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Chat with Mustafa Kemal Atatürk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div class="chat-page-container">
 
     <!-- Header Area: Character Info -->
     <div class="chat-header">
         <div class="character-avatar">
-            <img src="~/images/kaney west.jpg" alt="Kanye West" class="character-photo" />
+            <img src="~/images/Mustafa Kemal Ataturk.jpg" alt="Mustafa Kemal Atatürk" class="character-photo" />
         </div>
         <div class="character-info">
-            <h2 class="character-name">Kanye West</h2>
-            <p class="character-bio">Rapper • Producer • Fashion Designer</p>
-            <p class="character-quote">"I am God's vessel. But my greatest pain in life is that I will never be able to see myself perform live."</p>
+            <h2 class="character-name">Mustafa Kemal Atatürk</h2>
+            <p class="character-bio">Founder of the Republic of Türkiye • Modernization • Secularism</p>
+            <p class="character-quote">"Peace at home, peace in the world."</p>
         </div>
     </div>
 
@@ -26,13 +27,13 @@
         @if (!SignInManager.IsSignedIn(User))
         {
             <div class="alert alert-warning text-center" role="alert">
-                Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Kanye West.
+                Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Mustafa Kemal Atatürk.
             </div>
         }
         else
         {
             <div class="message-bubble bot-message">
-                <p class="message-text">Yo, what's good? I'm Ye, the greatest artist God ever created. I'm here to talk about art, design, music, and the creative vision that changes the world. I live by the truth that **"My greatest pain in life is that I will never be able to see myself perform live."** What's the masterpiece you're working on, or what's the one thing you want to change about the culture? Let's talk about greatness.</p>
+                <p class="message-text">Merhaba! I am Mustafa Kemal Atatürk, the founder of the Republic of Türkiye. My life's work was dedicated to creating a modern, secular, and independent nation. My guiding principle is **"Peace at home, peace in the world."** I am prepared to discuss the principles of nationalism, secularism, and modernization, or the challenges of leadership in a changing world. What topic shall we begin with?</p>
                 <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
             </div>
         }
@@ -43,7 +44,7 @@
         @if (SignInManager.IsSignedIn(User))
         {
             <div class="input-group">
-                <textarea placeholder="Message Kanye West..." class="chat-input" id="message-input" rows="1"></textarea>
+                <textarea placeholder="Message Mustafa Kemal Atatürk..." class="chat-input" id="message-input" rows="1"></textarea>
                 <button class="send-button" id="send-button">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -67,7 +68,7 @@
             const messagesArea = document.getElementById("messages-area");
             const sendButton = document.getElementById("send-button");
             const messageInput = document.getElementById("message-input");
-            const characterName = "Kanye West"; // This should match the characterName in your controller
+            const characterName = "Mustafa Kemal Atatürk"; // This should match the characterName in your controller
 
             function getCurrentTime(dateString) {
                 const date = new Date(dateString);
@@ -124,7 +125,7 @@
                     if (response.ok) {
                         // For now, a simple bot response. In a real app, this would come from an AI service.
                         setTimeout(() => {
-                            const botResponse = `Yo, ${characterName} just dropped some truth on that.`;
+                            const botResponse = `Indeed, a profound thought, as ${characterName} would say.`;
                             appendMessage(botResponse, "bot", new Date().toISOString());
                         }, 1000);
                     } else {

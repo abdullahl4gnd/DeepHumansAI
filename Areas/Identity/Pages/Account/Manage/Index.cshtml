@@ -1,30 +1,177 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Manage your account";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+<div class="manage-page-container">
+    <h1 class="fw-bold text-white mb-4">@ViewData["Title"]</h1>
+
+    <div class="manage-grid">
+        <!-- Main content -->
+        <div class="manage-body-column" style="flex:1; min-width:300px;">
+            <h2 class="text-white mb-3">Manage Your Account</h2>
+            <p class="text-muted mb-4">Update your account details below.</p>
+
+            <!-- ✅ Success Toast (backend TempData) -->
+            @if (TempData["StatusMessage"] != null)
+            {
+                <div id="successToast" class="toast-message">
+                    <i class="fas fa-check-circle"></i> @TempData["StatusMessage"]
+                </div>
+            }
+
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <!-- Email (read-only) -->
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label fw-semibold">Email</label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label asp-for="Input.UserName" class="form-label fw-semibold">Username</label>
+                    <input asp-for="Input.UserName" class="form-control" placeholder="Enter your username" />
+                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label asp-for="Input.PhoneNumber" class="form-label fw-semibold">Phone Number</label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="+90XXXXXXXXXX" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <!-- Save button -->
+                <div class="text-center">
+                    <button type="submit" class="action-btn">
+                        <i class="fas fa-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">© 2025 AI DHumans — Profile Settings</small>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // ✅ Show backend-triggered success toast
+        document.addEventListener('DOMContentLoaded', function () {
+            const toast = document.getElementById('successToast');
+            if (toast) {
+                toast.classList.add('toast-show');
+                setTimeout(() => toast.classList.remove('toast-show'), 3000);
+            }
+        });
+    </script>
 }
+
+<style>
+/* === Inputs === */
+.form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #b71c1c !important;
+    border-radius: 8px !important;
+    transition: 0.3s ease;
+    padding: 12px;
+}
+
+.form-control:focus {
+    border-color: #ff3b3b !important;
+    box-shadow: 0 0 8px rgba(255, 59, 59, 0.5) !important;
+}
+
+/* === Action Button (Unified across all Manage pages) === */
+.action-btn {
+    background-color: #b71c1c !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 12px 24px !important;
+    font-weight: bold !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    width: 50%;
+}
+
+.action-btn i {
+    margin-right: 6px;
+}
+
+.action-btn:hover {
+    background-color: #d32f2f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 59, 59, 0.4);
+}
+
+/* === Headings and Text === */
+h1, h2 {
+    color: #fff;
+}
+
+h2 {
+    font-size: 1.8rem;
+    border-bottom: 1px solid #b71c1c;
+    padding-bottom: 10px;
+}
+
+.text-muted {
+    color: #aaa !important;
+}
+
+/* === Page Layout === */
+.manage-body-column {
+    padding: 20px;
+}
+
+.manage-page-container {
+    border: 1px solid #b71c1c;
+    border-radius: 8px;
+    padding: 30px;
+    background-color: #1a1a1a;
+}
+
+/* === Toast Message === */
+.toast-message {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background-color: #1e1e1e;
+    color: #00e676;
+    border: 1px solid #00e676;
+    padding: 14px 22px;
+    border-radius: 50px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+    z-index: 2000;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-message i {
+    font-size: 1.2em;
+}
+
+.toast-show {
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+</style>

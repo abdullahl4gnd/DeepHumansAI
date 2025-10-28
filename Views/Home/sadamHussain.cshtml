@@ -12,7 +12,7 @@
     <!-- Header Area: Character Info -->
     <div class="chat-header">
         <div class="character-avatar">
-            <img src="~/images/saddam hussein.jpg" alt="Saddam Hussein" class="character-photo" />
+            <img src="~/images/sadam hussain.jpg" alt="Saddam Hussein" class="character-photo" />
         </div>
         <div class="character-info">
             <h2 class="character-name">Saddam Hussein</h2>
@@ -21,12 +21,25 @@
         </div>
     </div>
 
-    <!-- Main Chat Area -->
-    <div class="messages-area" id="messages-area">
+    <!-- Main Chat Are    <div class="messages-area" id="messages-area">
         @if (!SignInManager.IsSignedIn(User))
         {
             <div class="alert alert-warning text-center" role="alert">
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Saddam Hussein.
+            </div>
+        }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">I am Saddam Hussein, the former President of Iraq. My rule was marked by strong authority, conflict, and a fierce defense of the Arab nation. I have stated, **"We have no other choice but to continue on the path of jihad, until victory or martyrdom."** I can discuss the complexities of geopolitical power, the history of the Middle East, or the nature of absolute leadership. What is your question?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
+            </div>
+        }
+    </div>    else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">I am Saddam Hussein, the former President of Iraq. My rule was marked by strong authority, conflict, and a fierce defense of the Arab nation. I have stated, **"We have no other choice but to continue on the path of jihad, until victory or martyrdom."** I can discuss the complexities of geopolitical power, the history of the Middle East, or the nature of absolute leadership. What is your question?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
             </div>
         }
     </div>

@@ -29,6 +29,13 @@
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Albert Einstein.
             </div>
         }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">Greetings! I am Albert Einstein, a theoretical physicist. My work on the theory of relativity reshaped our understanding of space, time, gravity, and the universe itself. I believe that **"Imagination is more important than knowledge."** I am here to discuss the mysteries of the cosmos, the ethics of science, or any profound question that occupies your mind. What burning question brings you to my humble conversation today?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
+            </div>
+        }
     </div>
 
     <!-- Input Bar -->

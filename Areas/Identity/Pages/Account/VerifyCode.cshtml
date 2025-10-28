@@ -1,0 +1,27 @@
+@page
+@model VerifyCodeModel
+@{
+    ViewData["Title"] = "Verify Code";
+}
+
+<h2 class="fw-bold text-white mb-3">Verify Your Code</h2>
+<p class="text-muted mb-4">Enter the 6-digit code sent to your email.</p>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Code" class="form-label">Verification Code</label>
+        <input asp-for="Input.Code" class="form-control" placeholder="Enter your code" />
+        <span asp-validation-for="Input.Code" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="action-btn">
+        <i class="fas fa-check"></i> Verify Code
+    </button>
+</form>
+
+@if (Model.StatusMessage != null)
+{
+    <div class="alert alert-danger mt-3">@Model.StatusMessage</div>
+}

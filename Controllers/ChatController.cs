@@ -70,7 +70,7 @@ namespace DeepHumans.Controllers
 
     public class ChatMessageViewModel
     {
-        public string CharacterName { get; set; }
-        public string MessageContent { get; set; }
+        public string CharacterName { get; set; } = string.Empty;
+        public string MessageContent { get; set; } = string.Empty;
     }
 }

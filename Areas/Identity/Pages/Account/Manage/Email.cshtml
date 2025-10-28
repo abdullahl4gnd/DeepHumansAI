@@ -1,44 +1,155 @@
 ﻿@page
 @model EmailModel
 @{
-    ViewData["Title"] = "Manage Email";
+    ViewData["Title"] = "Manage your account";
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="email-form" method="post">
-            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
-            @if (Model.IsEmailConfirmed)
-            {
-                <div class="form-floating mb-3 input-group">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                        <div class="input-group-append">
-                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
-                        </div>
-                    <label asp-for="Email" class="form-label"></label>
-                </div>
-            }
-            else
-            {
-                <div class="form-floating mb-3">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                    <label asp-for="Email" class="form-label"></label>
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
-                </div>
-            }
-            <div class="form-floating mb-3">
-                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
-                <label asp-for="Input.NewEmail" class="form-label"></label>
-                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
-            </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-primary">Change email</button>
-        </form>
+<h2 class="fw-bold text-white mb-3">Manage Email</h2>
+<p class="text-muted mb-4">Update your email address below.</p>
+
+<!-- ✅ Toast message appears only when backend sets TempData -->
+@if (TempData["StatusMessage"] != null)
+{
+    <div id="successToast" class="toast-message">
+        <i class="fas fa-check-circle"></i> @TempData["StatusMessage"]
     </div>
+}
+
+<form id="email-form" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+    <!-- Current Email -->
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label fw-semibold">Current Email</label>
+        <input asp-for="Email" class="form-control" disabled />
+    </div>
+
+    <!-- New Email -->
+    <div class="mb-3">
+        <label asp-for="Input.NewEmail" class="form-label fw-semibold">New Email</label>
+        <input asp-for="Input.NewEmail" class="form-control" placeholder="Enter your new email" />
+        <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center">
+        <button type="submit" class="action-btn">
+            <i class="fas fa-envelope"></i> Change Email
+        </button>
+    </div>
+</form>
+
+<div class="text-center mt-3">
+    <small class="text-muted">© 2025 AI DHumans — Profile Settings</small>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toast = document.getElementById('successToast');
+            if (toast) {
+                toast.classList.add('toast-show');
+                setTimeout(() => toast.classList.remove('toast-show'), 3000);
+            }
+        });
+    </script>
 }
+
+<style>
+/* === Inputs === */
+.form-control {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #b71c1c !important;
+    border-radius: 8px !important;
+    transition: 0.3s ease;
+    padding: 12px;
+}
+
+.form-control:focus {
+    border-color: #ff3b3b !important;
+    box-shadow: 0 0 8px rgba(255, 59, 59, 0.5) !important;
+}
+
+/* === Unified Action Button === */
+.action-btn {
+    background-color: #b71c1c !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 12px 24px !important;
+    font-weight: bold !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    width: 50%;
+}
+
+.action-btn i {
+    margin-right: 6px;
+}
+
+.action-btn:hover {
+    background-color: #d32f2f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 59, 59, 0.4);
+}
+
+/* === Typography === */
+h2 {
+    font-size: 1.8rem;
+    border-bottom: 1px solid #b71c1c;
+    padding-bottom: 10px;
+}
+
+.text-muted {
+    color: #aaa !important;
+}
+
+/* === Container === */
+.manage-body-column {
+    padding: 20px;
+}
+
+.manage-page-container {
+    border: 1px solid #b71c1c;
+    border-radius: 8px;
+    padding: 30px;
+    background-color: #1a1a1a;
+}
+
+/* === Toast Message === */
+.toast-message {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background-color: #1e1e1e;
+    color: #00e676;
+    border: 1px solid #00e676;
+    padding: 14px 22px;
+    border-radius: 50px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+    z-index: 2000;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.toast-message i {
+    font-size: 1.2em;
+}
+
+.toast-show {
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+</style>

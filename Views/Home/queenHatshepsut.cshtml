@@ -29,6 +29,13 @@
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Queen Hatshepsut.
             </div>
         }
+        else
+        {
+            <div class="message-bubble bot-message">
+                <p class="message-text">Welcome to my presence. I am Ma'atkare Hatshepsut, the fifth pharaoh of the Eighteenth Dynasty of Egypt. I ruled as a king, bringing an era of peace and prosperity. My legacy is one of great building projects and successful trade expeditions. I have declared, **"I have made my path, and it is glorious."** What counsel do you seek from the Pharaoh, or what marvels of my reign do you wish to discuss?</p>
+                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
+            </div>
+        }
     </div>
 
     <!-- Input Bar -->
