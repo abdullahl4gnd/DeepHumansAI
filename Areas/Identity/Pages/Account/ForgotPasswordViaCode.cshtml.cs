@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DeepHumans.Models;
@@ -9,12 +8,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeepHumans.Areas.Identity.Pages.Account
 {
-    public class ForgotPasswordModel : PageModel
+    public class ForgotPasswordViaCodeModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordViaCodeModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -23,15 +22,16 @@ namespace DeepHumans.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-
         public class InputModel
         {
             [Required]
             [EmailAddress]
             public string Email { get; set; }
         }
+
+        public string StatusMessage { get; set; }
+
+        public void OnGet() { }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -41,23 +41,25 @@ namespace DeepHumans.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                StatusMessage = "If this email exists, a code has been sent.";
+                StatusMessage = "No user found with that email.";
                 return Page();
             }
 
-            // Generate a random 6-digit OTP
-            var otp = new Random().Next(100000, 999999).ToString();
+            // Generate a 6-digit random code
+            var code = new Random().Next(100000, 999999).ToString();
 
-            // Store it temporarily (you can store it in DB or Redis for production)
-            TempData["ResetOTP"] = otp;
-            TempData["Email"] = Input.Email;
+            // Temporarily store code in user’s security stamp (or in claims)
+            user.SecurityStamp = code;
+            await _userManager.UpdateAsync(user);
 
-            // Send it via email
-            await _emailSender.SendEmailAsync(Input.Email, "Password Reset Code",
-                $"Your verification code is: <b>{otp}</b>. It expires in 10 minutes.");
+            // Send email
+            await _emailSender.SendEmailAsync(
+                Input.Email,
+                "AI DHumans Password Reset Code",
+                $"Your password reset code is: <b>{code}</b><br/><br/>If you didn’t request this, please ignore this email.");
 
-            StatusMessage = "A verification code has been sent to your email.";
-            return RedirectToPage("/Account/VerifyCode");
+            // Redirect to code entry page
+            return RedirectToPage("/Account/ResetPasswordViaCode", new { email = Input.Email });
         }
     }
 }
