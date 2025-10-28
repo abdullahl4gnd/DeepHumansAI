@@ -3,44 +3,57 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using DeepHumans.Data;
 using DeepHumans.Models;
-using DeepHumans.Services; // ✅ Add this for your custom EmailSender class
+using DeepHumans.Services; // your EmailSender
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ---------- DB ----------
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ✅ Add Identity with confirmed account requirement
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
-    options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// ---------- Identity ----------
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
-// ✅ Register your custom EmailSender implementation
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+// ---------- Email sender (YOUR implementation) ----------
+builder.Services.AddTransient<DeepHumans.Services.IEmailSender, DeepHumans.Services.EmailSender>();
 
-// Add MVC + Razor pages
+// ---------- Session (REQUIRED) ----------
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// ---------- MVC / Razor ----------
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ---------- Pipeline ----------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// app.UseHttpsRedirection(); // (optional) uncomment if using HTTPS
+// app.UseHttpsRedirection(); // leave commented if you’re testing on plain HTTP
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// >>> VERY IMPORTANT ORDER <<<
+app.UseSession();          // 1) session BEFORE auth
+app.UseAuthentication();   // 2) authentication
+app.UseAuthorization();    // 3) authorization
 
-// Configure route mapping
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

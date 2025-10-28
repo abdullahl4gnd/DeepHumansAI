@@ -1,38 +1,44 @@
-using System.Net;
-using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using System.Net;
 
 namespace DeepHumans.Services
 {
+    public interface IEmailSender
+    {
+        Task SendEmailAsync(string email, string subject, string htmlMessage);
+    }
+
     public class EmailSender : IEmailSender
     {
+        private readonly IConfiguration _config;
+
+        public EmailSender(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            // ✅ Replace these values with your own
-            var fromAddress = new MailAddress("abodyfiras110@gmail.com", "AI DHumans Support");
-            var toAddress = new MailAddress(email);
-            const string fromPassword = "bfek yqlg wzrk tcwr"; // do NOT use your normal Gmail password
-
-            var smtp = new SmtpClient
+            var smtp = new SmtpClient("smtp.gmail.com")
             {
-                Host = "smtp.gmail.com",
                 Port = 587,
+                Credentials = new NetworkCredential("abodyfiras110@gmail.com", "bfek yqlg wzrk tcwr"),
                 EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
             };
 
-            using (var message = new MailMessage(fromAddress, toAddress)
+            var mail = new MailMessage
             {
+                From = new MailAddress("abodyfiras110@gmail.com", "AI DHumans"),
                 Subject = subject,
                 Body = htmlMessage,
-                IsBodyHtml = true
-            })
-            {
-                await smtp.SendMailAsync(message);
-            }
+                IsBodyHtml = true,
+            };
+
+            mail.To.Add(email);
+
+            await smtp.SendMailAsync(mail);
         }
     }
 }

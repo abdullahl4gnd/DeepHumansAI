@@ -5,47 +5,143 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="identity-page-container">
-    <h1>@ViewData["Title"]</h1>
-    <section>
-        <form id="account" method="post">
-                
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox">
-                    <label asp-for="Input.RememberMe">
-                        <input asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<div class="identity-page-container login-page-container">
+    <h1 class="fw-bold text-white mb-3">@ViewData["Title"]</h1>
+    <p class="text-muted mb-4">Welcome back! Please sign in to continue.</p>
 
+    <section>
+        <form id="account" method="post" class="login-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label fw-semibold text-white"></label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label fw-semibold text-white"></label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter your password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="form-check text-white mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label">
+                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                </label>
+            </div>
+
+            <!-- Login Button -->
+            <div class="text-center mb-3">
+                <button id="login-submit" type="submit" class="action-btn">
+                    <i class="fas fa-sign-in-alt"></i> Log in
+                </button>
+            </div>
+
+            <!-- Links -->
+            <div class="text-center">
+                <p>
+                    <a id="forgot-password" asp-page="/Account/ForgotPasswordViaCode" class="link-danger">
+                        Forgot your password?
+                    </a>
+                </p>
+                <p>
+                    <a asp-page="/Account/Register" asp-route-returnUrl="@Model.ReturnUrl" class="link-light">
+                        Register as a new user
+                    </a>
+                </p>
+                <p>
+                    <a id="resend-confirmation" asp-page="/Account/ResendEmailConfirmation" class="link-light">
+                        Resend email confirmation
+                    </a>
+                </p>
+            </div>
+        </form>
+    </section>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    /* === Container === */
+    .login-page-container {
+        border: 1px solid #b71c1c;
+        border-radius: 10px;
+        background-color: #1a1a1a;
+        padding: 40px;
+        max-width: 450px;
+        margin: 40px auto;
+        box-shadow: 0 0 20px rgba(183, 28, 28, 0.3);
+    }
+
+    /* === Inputs === */
+    .form-control {
+        background-color: #111 !important;
+        color: #fff !important;
+        border: 1px solid #b71c1c !important;
+        border-radius: 8px !important;
+        transition: 0.3s ease;
+        padding: 12px;
+    }
+
+    .form-control:focus {
+        border-color: #ff3b3b !important;
+        box-shadow: 0 0 8px rgba(255, 59, 59, 0.5) !important;
+    }
+
+    /* === Buttons === */
+    .action-btn {
+        background-color: #b71c1c !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 12px 30px !important;
+        font-weight: bold !important;
+        color: #fff !important;
+        transition: all 0.3s ease;
+        width: 60%;
+    }
+
+    .action-btn:hover {
+        background-color: #d32f2f !important;
+        transform: translateY(-2px);
+        box-shadow: 0 0 10px rgba(255, 59, 59, 0.4);
+    }
+
+    /* === Links === */
+    .link-danger {
+        color: #ff3b3b;
+        text-decoration: none;
+    }
+
+    .link-danger:hover {
+        text-decoration: underline;
+        color: #ff6666;
+    }
+
+    .link-light {
+        color: #ccc;
+        text-decoration: none;
+    }
+
+    .link-light:hover {
+        text-decoration: underline;
+        color: #fff;
+    }
+
+    /* === Typography === */
+    h1 {
+        font-size: 1.8rem;
+        border-bottom: 1px solid #b71c1c;
+        padding-bottom: 10px;
+    }
+
+    .text-muted {
+        color: #aaa !important;
+    }
+</style>
