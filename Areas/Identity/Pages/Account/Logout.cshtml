@@ -1,21 +1,172 @@
 ﻿@page
-@model LogoutModel
+@model DeepHumans.Areas.Identity.Pages.Account.LoginModel
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Log in";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+    }
+
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
         }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
-</header>
+
+    .login-card {
+        background-color: #0a0a0a;
+        border: 1px solid #b71c1c;
+        border-radius: 16px;
+        padding: 40px;
+        width: 420px;
+        box-shadow: 0 0 20px rgba(183, 28, 28, 0.4);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .login-card:hover {
+        box-shadow: 0 0 35px rgba(183, 28, 28, 0.7);
+    }
+
+    .login-title {
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #b71c1c;
+        padding-bottom: 10px;
+        letter-spacing: 0.5px;
+    }
+
+    label {
+        color: #ccc;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-control {
+        background-color: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: #b71c1c;
+        box-shadow: 0 0 8px #b71c1c;
+        outline: none;
+    }
+
+    .btn-login {
+        background-color: #b71c1c;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+
+    .btn-login:hover {
+        background-color: #e53935;
+        box-shadow: 0 0 15px rgba(229, 57, 53, 0.6);
+    }
+
+    .form-check-label {
+        color: #bbb;
+        font-size: 13px;
+    }
+
+    .forgot-link,
+    .register-link {
+        color: #b71c1c;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .forgot-link:hover,
+    .register-link:hover {
+        color: #e53935;
+        text-decoration: underline;
+    }
+
+    .text-danger {
+        color: #ff5252 !important;
+        font-size: 13px;
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #bbb;
+        font-size: 14px;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2 class="login-title">Welcome Back</h2>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                <i class="bi bi-box-arrow-in-right"></i> Log In
+            </button>
+
+            <div class="text-center mt-3">
+                <a asp-page="./ForgotPassword" class="forgot-link">Forgot your password?</a>
+            </div>
+
+            <div class="login-footer mt-3">
+                Don’t have an account?
+                <a asp-page="./Register" class="register-link">Sign Up</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

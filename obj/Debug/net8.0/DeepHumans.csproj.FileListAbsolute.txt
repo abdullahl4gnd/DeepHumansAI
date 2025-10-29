@@ -288,7 +288,13 @@ C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.EntityFrameworkCo
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.NET.StringTools.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll
@@ -299,6 +305,7 @@ C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.VisualStudio.Web.
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\MySqlConnector.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.Common.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.Configuration.dll
@@ -309,6 +316,7 @@ C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.Packaging.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.ProjectModel.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.Protocol.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\NuGet.Versioning.dll
+C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 C:\Users\wtpir\Documents\DeepHumans\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll

@@ -1,9 +1,10 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DeepHumans.Models;
-using DeepHumans.Services; // your custom EmailSender
 using Microsoft.AspNetCore.Http; // ✅ For HttpContext.Session
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services; // ✅ Use the official IEmailSender interface
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -12,7 +13,7 @@ namespace DeepHumans.Areas.Identity.Pages.Account
     public class ForgotPasswordViaCodeModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender _emailSender; // ✅ Microsoft interface, not custom
 
         public ForgotPasswordViaCodeModel(
             UserManager<ApplicationUser> userManager,
@@ -25,6 +26,7 @@ namespace DeepHumans.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
+        [TempData]
         public string? StatusMessage { get; set; }
 
         public class InputModel
@@ -49,7 +51,7 @@ namespace DeepHumans.Areas.Identity.Pages.Account
                 return RedirectToPage("/Account/VerifyCode");
             }
 
-            // ✅ Reverted: Generate 6-digit code
+            // ✅ Generate 6-digit code
             var code = new Random().Next(100000, 999999).ToString();
 
             // ✅ Store in session for later verification
@@ -62,8 +64,6 @@ namespace DeepHumans.Areas.Identity.Pages.Account
             var body = $@"
                 <h3>Your AI DHumans password reset code:</h3>
                 <div style='font-size:24px;font-weight:bold;color:#b71c1c;'>{code}</div>
-                  
-
                 <p>This code will expire in 10 minutes.</p>
                 <p>If you didn’t request this, please ignore this email.</p>";
 

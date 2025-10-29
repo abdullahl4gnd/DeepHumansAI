@@ -1,27 +1,166 @@
 @page
-@model VerifyCodeModel
+@model DeepHumans.Areas.Identity.Pages.Account.VerifyCodeModel
 @{
-    ViewData["Title"] = "Verify Code";
+    ViewData["Title"] = "Verify Your Code";
 }
 
-<h2 class="fw-bold text-white mb-3">Verify Your Code</h2>
-<p class="text-muted mb-4">Enter the 6-digit code sent to your email.</p>
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+    }
 
-<form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    .verify-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        animation: fadeIn 0.8s ease-in-out;
+    }
 
-    <div class="mb-3">
-        <label asp-for="Input.Code" class="form-label">Verification Code</label>
-        <input asp-for="Input.Code" class="form-control" placeholder="Enter your code" />
-        <span asp-validation-for="Input.Code" class="text-danger"></span>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .verify-card {
+        background-color: #0a0a0a;
+        border: 1px solid #b71c1c;
+        border-radius: 16px;
+        padding: 40px;
+        width: 420px;
+        box-shadow: 0 0 20px rgba(183, 28, 28, 0.4);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .verify-card:hover {
+        box-shadow: 0 0 35px rgba(183, 28, 28, 0.7);
+    }
+
+    .verify-title {
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #b71c1c;
+        padding-bottom: 10px;
+        letter-spacing: 0.5px;
+    }
+
+    .verify-text {
+        text-align: center;
+        color: #ccc;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    label {
+        color: #ccc;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-control {
+        background-color: #111;
+        color: #fff;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        transition: all 0.2s ease-in-out;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #b71c1c;
+        box-shadow: 0 0 8px #b71c1c;
+        outline: none;
+    }
+
+    .btn-verify {
+        background-color: #b71c1c;
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+
+    .btn-verify:hover {
+        background-color: #e53935;
+        box-shadow: 0 0 15px rgba(229, 57, 53, 0.6);
+    }
+
+    .text-danger {
+        color: #ff5252 !important;
+        font-size: 13px;
+        text-align: center;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .verify-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #bbb;
+        font-size: 14px;
+    }
+
+    .verify-footer a {
+        color: #b71c1c;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .verify-footer a:hover {
+        color: #e53935;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="verify-wrapper">
+    <div class="verify-card">
+        <h2 class="verify-title">Verify Your Code</h2>
+        <p class="verify-text">Enter the 6-digit code sent to your email.</p>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-4">
+                <label asp-for="Input.Code">Verification Code</label>
+                <input asp-for="Input.Code" class="form-control" placeholder="Enter your code" />
+                <span asp-validation-for="Input.Code" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-verify">
+                <i class="bi bi-shield-check"></i> Verify Code
+            </button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+        {
+            <p class="text-danger mt-3">@Model.StatusMessage</p>
+        }
+
+        <div class="verify-footer">
+            Didn’t get the code? <a asp-page="./ForgotPasswordViaCode">Request a new one</a>
+        </div>
     </div>
+</div>
 
-    <button type="submit" class="action-btn">
-        <i class="fas fa-check"></i> Verify Code
-    </button>
-</form>
-
-@if (Model.StatusMessage != null)
-{
-    <div class="alert alert-danger mt-3">@Model.StatusMessage</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
