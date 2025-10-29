@@ -2,10 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DeepHumans.Models;
+using DeepHumans.Services; // ✅ for IEmailSender if you're using custom one
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -15,11 +19,16 @@ namespace DeepHumans.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public IndexModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public IndexModel(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
         }
 
         // Display email (read-only)
@@ -114,6 +123,39 @@ namespace DeepHumans.Areas.Identity.Pages.Account.Manage
             }
 
             return RedirectToPage();
+        }
+
+        // ✅ NEW HANDLER: Send password update verification email
+        public async Task<IActionResult> OnPostSendPasswordResetAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToPage("/Account/Login");
+            }
+
+            // Generate a secure random 6-digit code
+            var code = new Random().Next(100000, 999999).ToString();
+
+            // Save to session for VerifyCode flow
+            HttpContext.Session.SetString("ResetCode", code);
+            HttpContext.Session.SetString("ResetEmail", user.Email);
+            HttpContext.Session.SetString("CodeTimestamp", DateTime.UtcNow.ToString("O"));
+
+            // Prepare email content
+            var subject = "AI DHumans Password Update Code";
+            var body = $@"
+                <h3>Hello {user.UserName},</h3>
+                <p>Your password update verification code is:</p>
+                <div style='font-size:24px;font-weight:bold;color:#b71c1c;'>{code}</div>
+                <p>This code expires in 10 minutes.</p>
+                <p>If you didn’t request this, please ignore this email.</p>";
+
+            // Send email
+            await _emailSender.SendEmailAsync(user.Email, subject, body);
+
+            TempData["StatusMessage"] = "✅ Password update code sent successfully! Please check your email.";
+            return RedirectToPage("/Account/VerifyCode");
         }
     }
 }
