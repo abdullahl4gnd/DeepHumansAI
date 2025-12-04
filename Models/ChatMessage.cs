@@ -21,6 +21,9 @@ namespace DeepHumans.Models
         [Required]
         public string MessageContent { get; set; } = string.Empty;
 
+        // Is this message from the bot/AI?
+        public bool IsBot { get; set; } = false;
+
         // Timestamp for when the message was sent
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     }

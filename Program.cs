@@ -5,6 +5,7 @@ using DeepHumans.Data;
 using DeepHumans.Models;
 using DeepHumans.Services; // Your custom EmailSender
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using DeepHumans.Services; // AssistantService
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+        new MySqlServerVersion(new Version(8, 0, 21))
     )
 );
 
@@ -59,6 +60,12 @@ builder.Services.AddSession(options =>
 // ======================================================
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+// ======================================================
+// 🔹 AI Assistant Service (OpenAI)
+// ======================================================
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IAssistantService, AssistantService>();
 
 // ======================================================
 // 🔹 BUILD THE APP

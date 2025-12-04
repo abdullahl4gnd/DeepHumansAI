@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DeepHumans")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c62d7fc320b31963a4a2a32f6678db548f313923")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e656a16a7123b400915d56a91eab97728b4245b1")]
 [assembly: System.Reflection.AssemblyProductAttribute("DeepHumans")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DeepHumans")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,7 +1,7 @@
 ﻿@page
-@model DeepHumans.Areas.Identity.Pages.Account.LoginModel
+@model DeepHumans.Areas.Identity.Pages.Account.LogoutModel
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Log out";
 }
 
 <style>
@@ -128,45 +128,15 @@
 </style>
 
 <div class="login-wrapper">
-    <div class="login-card">
-        <h2 class="login-title">Welcome Back</h2>
-
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" placeholder="Enter your password" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-check mb-3">
-                <input asp-for="Input.RememberMe" class="form-check-input" />
-                <label asp-for="Input.RememberMe" class="form-check-label"></label>
-            </div>
-
-            <button type="submit" class="btn btn-login">
-                <i class="bi bi-box-arrow-in-right"></i> Log In
-            </button>
-
-            <div class="text-center mt-3">
-                <a asp-page="./ForgotPassword" class="forgot-link">Forgot your password?</a>
-            </div>
-
-            <div class="login-footer mt-3">
-                Don’t have an account?
-                <a asp-page="./Register" class="register-link">Sign Up</a>
-            </div>
-        </form>
+    <div class="login-card" style="max-width:520px">
+        <h2 class="login-title">You have been logged out</h2>
+        <p class="text-center" style="color:#bbb">Your session has ended successfully.</p>
+        <div class="text-center mt-3">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-login">Return to Home</a>
+        </div>
     </div>
+    
+    <form method="post" class="d-none"></form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+@section Scripts { }

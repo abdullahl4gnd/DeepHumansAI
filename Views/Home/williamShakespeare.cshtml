@@ -31,6 +31,9 @@
         }
         else
         {
+            <button class="clear-chat-btn" id="clear-chat-btn">
+                <i class="fas fa-trash-alt"></i> Clear Chat
+            </button>
             <div class="message-bubble bot-message">
                 <p class="message-text">Hark, good sir or madam! I am William Shakespeare, a humble playwright and poet whose works explore the depths of the human condition—love, tragedy, ambition, and folly. As I've often said, **"All the world's a stage, and all the men and women merely players."** Tell me, what drama unfolds in your life? What tale of woe or comedy of errors would you have me dissect?</p>
                 <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
@@ -71,18 +74,74 @@
 
             function getCurrentTime(dateString) {
                 const date = new Date(dateString);
-                return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
+                return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
             }
 
-            function appendMessage(text, type, timestamp) {
+            function appendMessage(text, type, timestamp, messageId = null) {
                 const bubble = document.createElement("div");
                 bubble.className = `message-bubble ${type}-message`;
+                if (messageId) {
+                    bubble.dataset.messageId = messageId;
+                }
 
                 const formattedText = text.replace(/\n/g, "<br>");
-                bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime(timestamp)}</span>`;
+                const deleteBtn = (type === "user" && messageId) 
+                    ? `<button class="delete-message-btn" onclick="deleteMessage(${messageId})"><i class="fas fa-trash"></i> Delete</button>` 
+                    : "";
+                
+                bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime(timestamp)} ${deleteBtn}</span>`;
 
                 messagesArea.appendChild(bubble);
                 messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+
+            window.deleteMessage = async function(messageId) {
+                if (!confirm("Are you sure you want to delete this message?")) return;
+
+                try {
+                    const response = await fetch(`/Chat/DeleteMessage?messageId=${messageId}`, {
+                        method: "DELETE",
+                        credentials: "same-origin"
+                    });
+
+                    if (response.ok) {
+                        const bubble = document.querySelector(`[data-message-id="${messageId}"]`);
+                        if (bubble) bubble.remove();
+                    } else {
+                        console.error("Failed to delete message");
+                    }
+                } catch (error) {
+                    console.error("Error deleting message:", error);
+                }
+            }
+
+            async function clearChat() {
+                if (!confirm("Are you sure you want to clear all messages? This action cannot be undone.")) return;
+
+                try {
+                    const response = await fetch(`/Chat/ClearChat?characterName=${encodeURIComponent(characterName)}`, {
+                        method: "DELETE",
+                        credentials: "same-origin"
+                    });
+
+                    if (response.ok) {
+                        messagesArea.innerHTML = `
+                            <button class="clear-chat-btn" id="clear-chat-btn">
+                                <i class="fas fa-trash-alt"></i> Clear Chat
+                            </button>
+                            <div class="message-bubble bot-message">
+                                <p class="message-text">Hark, good sir or madam! I am William Shakespeare, a humble playwright and poet whose works explore the depths of the human condition—love, tragedy, ambition, and folly. As I've often said, **"All the world's a stage, and all the men and women merely players."** Tell me, what drama unfolds in your life? What tale of woe or comedy of errors would you have me dissect?</p>
+                                <span class="message-time">${getCurrentTime(new Date().toISOString())}</span>
+                            </div>
+                        `;
+                        // Re-attach event listener
+                        document.getElementById("clear-chat-btn").addEventListener("click", clearChat);
+                    } else {
+                        console.error("Failed to clear chat");
+                    }
+                } catch (error) {
+                    console.error("Error clearing chat:", error);
+                }
             }
 
             async function loadChatHistory() {
@@ -92,9 +151,20 @@
                     const response = await fetch(`/Chat/GetChatHistory?characterName=${encodeURIComponent(characterName)}`);
                     if (response.ok) {
                         const history = await response.json();
-                        messagesArea.innerHTML = ""; // Clear existing messages
+                        
+                        // Clear messages but keep the clear button
+                        const clearBtn = document.getElementById("clear-chat-btn");
+                        messagesArea.innerHTML = "";
+                        if (clearBtn) {
+                            messagesArea.appendChild(clearBtn);
+                        }
+
                         history.forEach(msg => {
-                            appendMessage(msg.messageContent, msg.isUser ? "user" : "bot", msg.timestamp);
+                            const text = msg.messageContent || msg.MessageContent || "";
+                            const when = msg.timestamp || msg.Timestamp || new Date().toISOString();
+                            const isUser = (typeof msg.isUser !== 'undefined') ? msg.isUser : (typeof msg.IsUser !== 'undefined' ? msg.IsUser : true);
+                            const msgId = msg.id || msg.Id || null;
+                            appendMessage(text, isUser ? "user" : "bot", when, msgId);
                         });
                     } else {
                         console.error("Failed to load chat history:", response.statusText);
@@ -112,26 +182,35 @@
                 messageInput.value = "";
                 autoResizeTextarea();
 
+                // Show loading indicator
+                const loadingBubble = document.createElement("div");
+                loadingBubble.className = "message-bubble bot-message loading-message";
+                loadingBubble.innerHTML = `<p class="message-text"><span class="typing-indicator"><span></span><span></span><span></span></span></p>`;
+                messagesArea.appendChild(loadingBubble);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+
                 try {
                     const response = await fetch("/Chat/SendMessage", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
+                        credentials: "same-origin",
                         body: JSON.stringify({ characterName: characterName, messageContent: message })
                     });
 
+                    // Remove loading indicator
+                    loadingBubble.remove();
+
                     if (response.ok) {
-                        // For now, a simple bot response. In a real app, this would come from an AI service.
-                        setTimeout(() => {
-                            const botResponse = `Hark! A most intriguing query, as ${characterName} would say.`;
-                            appendMessage(botResponse, "bot", new Date().toISOString());
-                        }, 1000);
+                        const data = await response.json();
+                        const botResponse = data.reply || `I'm here, but I couldn't generate a reply.`;
+                        appendMessage(botResponse, "bot", new Date().toISOString());
                     } else {
                         console.error("Failed to send message:", response.statusText);
-                        // Optionally, revert the message or show an error to the user
                     }
                 } catch (error) {
+                    loadingBubble.remove();
                     console.error("Error sending message:", error);
                 }
             }
@@ -158,6 +237,11 @@
                         }
                     }
                 });
+            }
+
+            const clearChatBtn = document.getElementById("clear-chat-btn");
+            if (clearChatBtn) {
+                clearChatBtn.addEventListener("click", clearChat);
             }
 
             loadChatHistory();
