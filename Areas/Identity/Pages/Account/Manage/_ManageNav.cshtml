@@ -6,31 +6,95 @@
     var hasPassword = currentUser != null && await SignInManager.UserManager.HasPasswordAsync(currentUser);
 }
 
-<ul class="nav flex-column text-start">
-    <!-- Profile -->
-    <li class="nav-item mb-2">
-        <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "Index" ? "active text-white bg-danger" : "")"
-           asp-page="./Index">
-            Profile
+<ul class="manage-nav-list">
+    <li>
+        <a class="manage-nav-link @(ViewData["ActivePage"] as string == "Index" ? "is-active" : "")" asp-page="./Index">
+            <i class="bi bi-person-circle"></i>
+            <div>
+                <div class="nav-title">Profile</div>
+                <div class="nav-sub">Basic information</div>
+            </div>
         </a>
     </li>
 
-    <!-- Email -->
-    <li class="nav-item mb-2">
-        <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "Email" ? "active text-white bg-danger" : "")"
-           asp-page="./Email">
-            Email
+    <li>
+        <a class="manage-nav-link @(ViewData["ActivePage"] as string == "Email" ? "is-active" : "")" asp-page="./Email">
+            <i class="bi bi-envelope"></i>
+            <div>
+                <div class="nav-title">Email</div>
+                <div class="nav-sub">Change email</div>
+            </div>
         </a>
     </li>
 
-    <!-- Password -->
     @if (hasPassword)
     {
-        <li class="nav-item mb-2">
-            <a class="btn btn-dark w-100 text-start @(ViewData["ActivePage"] as string == "ChangePassword" ? "active text-white bg-danger" : "")"
-               asp-page="./ChangePassword">
-                Password
+        <li>
+            <a class="manage-nav-link @(ViewData["ActivePage"] as string == "ChangePassword" ? "is-active" : "")" asp-page="./ChangePassword">
+                <i class="bi bi-shield-lock"></i>
+                <div>
+                    <div class="nav-title">Password</div>
+                    <div class="nav-sub">Update password</div>
+                </div>
             </a>
         </li>
     }
 </ul>
+
+<style>
+    .manage-nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .manage-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        color: #0f172a;
+        text-decoration: none;
+        font-weight: 600;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+
+    .manage-nav-link i {
+        color: #6366f1;
+        font-size: 1.1rem;
+    }
+
+    .nav-title {
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .nav-sub {
+        font-size: 0.85rem;
+        color: #6b7280;
+        line-height: 1.1;
+    }
+
+    .manage-nav-link:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 10px 22px rgba(99, 102, 241, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .manage-nav-link.is-active {
+        background: linear-gradient(120deg, #6366f1 0%, #14b8a6 100%);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 14px 28px rgba(99, 102, 241, 0.28);
+    }
+
+    .manage-nav-link.is-active i {
+        color: #fff;
+    }
+</style>

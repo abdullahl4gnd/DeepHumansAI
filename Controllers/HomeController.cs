@@ -24,6 +24,16 @@ namespace DeepHumans.Controllers
             return View();
         }
 
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
         // ===============================
         // Character Pages
         // ===============================

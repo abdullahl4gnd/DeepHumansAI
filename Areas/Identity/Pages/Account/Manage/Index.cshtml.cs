@@ -47,10 +47,6 @@ namespace DeepHumans.Areas.Identity.Pages.Account.Manage
             [Required(ErrorMessage = "Username is required.")]
             [Display(Name = "Username")]
             public string UserName { get; set; }
-
-            [RegularExpression(@"^\+?\d{6,15}$", ErrorMessage = "Please enter a valid phone number (6–15 digits, optional +).")]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -58,8 +54,7 @@ namespace DeepHumans.Areas.Identity.Pages.Account.Manage
             Username = await _userManager.GetEmailAsync(user);
             Input = new InputModel
             {
-                UserName = await _userManager.GetUserNameAsync(user),
-                PhoneNumber = await _userManager.GetPhoneNumberAsync(user) ?? string.Empty
+                UserName = await _userManager.GetUserNameAsync(user)
             };
         }
 
@@ -94,19 +89,6 @@ namespace DeepHumans.Areas.Identity.Pages.Account.Manage
                 if (!result.Succeeded)
                 {
                     StatusMessage = "⚠️ Error: Unable to update username.";
-                    return RedirectToPage();
-                }
-                updated = true;
-            }
-
-            // ✅ Update Phone if changed
-            var currentPhone = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != currentPhone)
-            {
-                var result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!result.Succeeded)
-                {
-                    StatusMessage = "⚠️ Error: Unable to update phone number.";
                     return RedirectToPage();
                 }
                 updated = true;

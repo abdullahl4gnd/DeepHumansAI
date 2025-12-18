@@ -43,25 +43,22 @@ namespace DeepHumans.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        // ✅ Add username field
+        // ✅ Add username field (optional display name, email is the unique identifier)
         public class InputModel
         {
-            [Required]
             [Display(Name = "Username")]
-            public string UserName { get; set; }
+            public string? UserName { get; set; }
 
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 10)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }            [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
@@ -80,11 +77,22 @@ namespace DeepHumans.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // Check if email already exists
+                var existingUser = await _userManager.FindByEmailAsync(Input.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, $"Email '{Input.Email}' is already taken.");
+                    return Page();
+                }
+
                 var user = CreateUser();
 
-                // ✅ Assign username and email
-                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
+                // ✅ Assign username and email (username can be duplicate, email must be unique)
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                
+                // Store display name separately if needed
+                user.UserName = Input.Email;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

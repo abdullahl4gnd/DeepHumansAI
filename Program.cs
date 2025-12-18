@@ -24,25 +24,63 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // ======================================================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // Disable email confirmation (register → login directly)
     options.SignIn.RequireConfirmedAccount = false;
 
-    // Simplify password policy for dev/testing
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 0;
+    // Strong password policy
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 10;
+    options.Password.RequiredUniqueChars = 4;
+
+    // Account lockout after failed attempts
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
 // ======================================================
+// 🔹 SECURE COOKIE CONFIGURATION
+// ======================================================
+var isDevelopment = builder.Environment.IsDevelopment();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.Name = isDevelopment ? "DeepHumans.Auth" : "__Host-DeepHumans.Auth";
+    
+    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    options.SlidingExpiration = true;
+    
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
+// ======================================================
+// 🔹 ANTI-FORGERY TOKEN PROTECTION
+// ======================================================
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.Name = isDevelopment ? "DeepHumans.AntiForgery" : "__Host-DeepHumans.AntiForgery";
+});
+
+// ======================================================
 // 🔹 EMAIL SENDER REGISTRATION
 // ======================================================
-// Use your custom EmailSender for Microsoft’s IEmailSender interface
-builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, DeepHumans.Services.EmailSender>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // ======================================================
 // 🔹 SESSION SUPPORT
@@ -79,9 +117,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-// app.UseHttpsRedirection(); // Uncomment if using HTTPS
 app.UseStaticFiles();
 
 app.UseRouting();

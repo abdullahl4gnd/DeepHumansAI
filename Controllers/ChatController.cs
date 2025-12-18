@@ -71,8 +71,22 @@ namespace DeepHumans.Controllers
             string reply;
             try
             {
-                // Call AI assistant for a reply
-                reply = await _assistant.GetReplyAsync(model.CharacterName, model.MessageContent);
+                // Get recent conversation history (last 20 messages)
+                var recentMessages = await _context.ChatMessages
+                    .Where(m => m.UserId == user.Id && m.CharacterName == model.CharacterName)
+                    .OrderByDescending(m => m.Timestamp)
+                    .Take(20)
+                    .OrderBy(m => m.Timestamp)
+                    .Select(m => new { m.MessageContent, m.IsBot })
+                    .ToListAsync();
+
+                // Convert to conversation history format
+                var conversationHistory = recentMessages
+                    .Select(m => (role: m.IsBot ? "assistant" : "user", content: m.MessageContent))
+                    .ToList();
+
+                // Call AI assistant with conversation history
+                reply = await _assistant.GetReplyAsync(model.CharacterName, model.MessageContent, conversationHistory);
                 
                 // Save bot reply to database
                 var botMessage = new ChatMessage

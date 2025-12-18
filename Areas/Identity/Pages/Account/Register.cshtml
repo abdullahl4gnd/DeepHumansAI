@@ -4,164 +4,319 @@
     ViewData["Title"] = "Create Account";
 }
 
-<style>
-    body {
-        background-color: #000;
-        color: #fff;
-        font-family: 'Poppins', sans-serif;
-        overflow-x: hidden;
-    }
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon"><i class="bi bi-person-plus-fill"></i></div>
+            <div>
+                <h2>Create Account</h2>
+                <p>Join Deep Humans AI and start chatting</p>
+            </div>
+        </div>
 
-    .register-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 90vh;
-        animation: fadeIn 0.8s ease-in-out;
-    }
+        <form method="post" class="auth-form" id="register-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="mb-3" style="display: block; padding: 12px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; color: #000; font-weight: 500;"></div>
 
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-15px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .register-card {
-        background-color: #0a0a0a;
-        border: 1px solid #b71c1c;
-        border-radius: 16px;
-        padding: 40px;
-        width: 420px;
-        box-shadow: 0 0 20px rgba(183, 28, 28, 0.4);
-        transition: all 0.3s ease-in-out;
-    }
-
-    .register-card:hover {
-        box-shadow: 0 0 35px rgba(183, 28, 28, 0.7);
-    }
-
-    .register-title {
-        text-align: center;
-        color: #fff;
-        font-weight: 600;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #b71c1c;
-        padding-bottom: 10px;
-        letter-spacing: 0.5px;
-    }
-
-    label {
-        color: #ccc;
-        font-size: 14px;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .form-control {
-        background-color: #111;
-        color: #fff;
-        border: 1px solid #333;
-        border-radius: 8px;
-        padding: 10px 12px;
-        font-size: 14px;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .form-control:focus {
-        border-color: #b71c1c;
-        box-shadow: 0 0 8px #b71c1c;
-        outline: none;
-    }
-
-    .btn-register {
-        background-color: #b71c1c;
-        border: none;
-        color: #fff;
-        font-weight: 600;
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        margin-top: 5px;
-    }
-
-    .btn-register:hover {
-        background-color: #e53935;
-        box-shadow: 0 0 15px rgba(229, 57, 53, 0.6);
-    }
-
-    .text-danger {
-        color: #ff5252 !important;
-        font-size: 13px;
-    }
-
-    .register-footer {
-        text-align: center;
-        margin-top: 20px;
-        color: #bbb;
-        font-size: 14px;
-    }
-
-    .register-footer a {
-        color: #b71c1c;
-        font-weight: bold;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .register-footer a:hover {
-        color: #e53935;
-        text-decoration: underline;
-    }
-</style>
-
-<div class="register-wrapper">
-    <div class="register-card">
-        <h2 class="register-title">Create Account</h2>
-
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Input.UserName"></label>
-                <input asp-for="Input.UserName" class="form-control" placeholder="Enter your username" />
+            <div class="form-group">
+                <label asp-for="Input.UserName">Display Name (Optional)</label>
+                <div class="input-with-icon">
+                    <i class="bi bi-person"></i>
+                    <input asp-for="Input.UserName" class="form-control" placeholder="Your display name (optional)" autocomplete="username" />
+                </div>
                 <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
+            <div class="form-group">
+                <label asp-for="Input.Email">Email</label>
+                <div class="input-with-icon">
+                    <i class="bi bi-envelope"></i>
+                    <input asp-for="Input.Email" class="form-control" placeholder="name@example.com" autocomplete="email" />
+                </div>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" placeholder="Enter your password" />
+            <div class="form-group">
+                <label asp-for="Input.Password">Password</label>
+                <div class="input-with-icon password-group">
+                    <i class="bi bi-lock"></i>
+                    <input asp-for="Input.Password" class="form-control" placeholder="Enter a strong password" autocomplete="new-password" id="register-password" />
+                    <button type="button" class="toggle-password" data-target="register-password"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="password-meter" id="password-meter">
+                    <div class="password-meter-bar" id="password-meter-bar"></div>
+                </div>
+                <div class="password-hints" id="password-hints">
+                    Min 10 characters · Uppercase · Lowercase · Number · Symbol (4 unique chars)
+                </div>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="form-group mb-4">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Re-enter your password" />
+            <div class="form-group mb-3">
+                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                <div class="input-with-icon password-group">
+                    <i class="bi bi-shield-lock"></i>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Re-enter password" autocomplete="new-password" id="register-confirm" />
+                    <button type="button" class="toggle-password" data-target="register-confirm"><i class="bi bi-eye"></i></button>
+                </div>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-register">
-                <i class="bi bi-person-plus-fill"></i> Sign Up
+            <button type="submit" class="primary-btn">
+                <i class="bi bi-person-plus"></i> Sign Up
             </button>
-        </form>
 
-        <div class="register-footer">
-            Already have an account? <a asp-page="./Login">Log in</a>
-        </div>
+            <div class="auth-footer">
+                Already have an account? <a asp-page="./Login">Log in</a>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            console.log('Register page loaded');
+            
+            // Password toggle
+            $('.toggle-password').click(function() {
+                var target = $(this).data('target');
+                var input = $('#' + target);
+                var icon = $(this).find('i');
+                
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                }
+            });
+            
+            // Password strength meter
+            $('#register-password').on('input', function() {
+                var password = $(this).val();
+                var strength = 0;
+                
+                if (password.length >= 10) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^a-zA-Z0-9]/.test(password)) strength++;
+                
+                var bar = $('#password-meter-bar');
+                bar.removeClass('weak medium strong very-strong');
+                
+                if (strength <= 2) {
+                    bar.addClass('weak').css('width', '25%');
+                } else if (strength === 3) {
+                    bar.addClass('medium').css('width', '50%');
+                } else if (strength === 4) {
+                    bar.addClass('strong').css('width', '75%');
+                } else {
+                    bar.addClass('very-strong').css('width', '100%');
+                }
+            });
+        });
+    </script>
 }
+
+<style>
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(99, 102, 241, 0.2);
+        padding: 40px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .auth-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .auth-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .auth-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #111827;
+        font-weight: 700;
+    }
+
+    .auth-header p {
+        margin: 2px 0 0 0;
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .input-with-icon {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #f8fafc;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-with-icon:focus-within {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        background: white;
+    }
+
+    .input-with-icon i {
+        color: #6366f1;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        border: none;
+        background: transparent;
+        flex: 1;
+        font-size: 1rem;
+        color: #111827;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #9ca3af;
+    }
+
+    .toggle-password {
+        border: none;
+        background: none;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 4px 6px;
+        font-size: 1rem;
+    }
+
+    .password-meter {
+        margin-top: 8px;
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .password-meter-bar {
+        height: 100%;
+        width: 0;
+        background: #e5e7eb;
+        transition: width 0.2s ease, background 0.2s ease;
+    }
+
+    .password-meter-bar.weak {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .password-meter-bar.medium {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .password-meter-bar.strong {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    }
+
+    .password-meter-bar.very-strong {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .password-hints {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .primary-btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25);
+    }
+
+    .primary-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 36px rgba(99, 102, 241, 0.35);
+    }
+
+    .primary-btn:active {
+        transform: translateY(0);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 16px;
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+
+    .auth-footer a {
+        color: #4f46e5;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+
+    @@media (max-width: 600px) {
+        .auth-card {
+            padding: 28px;
+        }
+
+        .auth-header h2 {
+            font-size: 1.4rem;
+        }
+    }
+</style>

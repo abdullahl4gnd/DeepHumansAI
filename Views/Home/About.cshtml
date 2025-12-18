@@ -1,0 +1,447 @@
+@{
+    ViewData["Title"] = "About";
+}
+
+<div class="about-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Hero Section -->
+                <div class="hero-section text-center mb-5">
+                    <h1 class="gradient-text mb-3">About Deep Humans AI</h1>
+                    <p class="lead-text">Bringing History's Greatest Minds to Life Through AI</p>
+                </div>
+
+                <!-- Main Content -->
+                <div class="content-card">
+                    <!-- What is Section -->
+                    <div class="section-block">
+                        <div class="section-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h2 class="section-title">What is Deep Humans AI?</h2>
+                        <p class="section-description">
+                            Deep Humans AI is an innovative platform that brings history's greatest minds to life through artificial intelligence. 
+                            Engage in meaningful conversations with legendary figures from different eras and cultures, learn from their wisdom, 
+                            and explore their perspectives on modern topics.
+                        </p>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="section-block">
+                        <div class="section-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h2 class="section-title">Features</h2>
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <i class="fas fa-comments feature-icon"></i>
+                                <h4>9 Historical Personalities</h4>
+                                <p>Chat with legends from science, politics, literature, and more</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-robot feature-icon"></i>
+                                <h4>AI-Powered Conversations</h4>
+                                <p>Real-time responses using advanced Ollama AI technology</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-history feature-icon"></i>
+                                <h4>Message History</h4>
+                                <p>Track your conversations with timestamps and context</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-trash-alt feature-icon"></i>
+                                <h4>Message Management</h4>
+                                <p>Delete individual messages or clear entire conversations</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-lock feature-icon"></i>
+                                <h4>Secure & Private</h4>
+                                <p>Your conversations are protected with authentication</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-mobile-alt feature-icon"></i>
+                                <h4>Responsive Design</h4>
+                                <p>Works seamlessly on desktop, tablet, and mobile devices</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Historical Figures Section -->
+                    <div class="section-block">
+                        <div class="section-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h2 class="section-title">Meet Our Historical Figures</h2>
+                        <div class="figures-grid">
+                            <div class="figure-card">
+                                <i class="fas fa-atom"></i>
+                                <h5>Albert Einstein</h5>
+                                <p>Physicist & Genius</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-music"></i>
+                                <h5>Tupac Shakur</h5>
+                                <p>Rapper & Activist</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-feather"></i>
+                                <h5>William Shakespeare</h5>
+                                <p>Playwright & Poet</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h5>Salah Al-Din</h5>
+                                <p>Warrior & Leader</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-flag"></i>
+                                <h5>Winston Churchill</h5>
+                                <p>Prime Minister</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-crown"></i>
+                                <h5>Queen Hatshepsut</h5>
+                                <p>Egyptian Pharaoh</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-landmark"></i>
+                                <h5>Saddam Hussein</h5>
+                                <p>Iraqi Leader</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-microphone"></i>
+                                <h5>Kanye West</h5>
+                                <p>Artist & Producer</p>
+                            </div>
+                            <div class="figure-card">
+                                <i class="fas fa-star-and-crescent"></i>
+                                <h5>Mustafa Kemal Atatürk</h5>
+                                <p>Turkish Founder</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technology Section -->
+                    <div class="section-block">
+                        <div class="section-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h2 class="section-title">Technology Stack</h2>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <i class="fas fa-server"></i>
+                                <h5>ASP.NET Core 8.0</h5>
+                                <p>Modern MVC Framework</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-database"></i>
+                                <h5>MySQL Database</h5>
+                                <p>Entity Framework Core</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-robot"></i>
+                                <h5>Ollama AI</h5>
+                                <p>llama3.2:1b Model</p>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <h5>ASP.NET Identity</h5>
+                                <p>Secure Authentication</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="cta-section">
+                        <h3>Ready to Start Your Journey?</h3>
+                        <p>Begin conversations with history's most influential minds today</p>
+                        <a asp-action="Index" class="cta-button">
+                            <i class="fas fa-comments me-2"></i> Start Chatting Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .about-page {
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .about-page .container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .about-page .row {
+        margin: 0;
+    }
+
+    .about-page .col-lg-10 {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .hero-section {
+        padding: 40px 20px;
+    }
+
+    .gradient-text {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #4f46e5 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+    }
+
+    .lead-text {
+        font-size: 1.5rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 0;
+        padding: 60px 40px;
+        box-shadow: none;
+    }
+
+    .section-block {
+        margin-bottom: 60px;
+        padding-bottom: 60px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .section-block:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+    }
+
+    .section-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 30px;
+    }
+
+    .section-description {
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #64748b;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .feature-item {
+        text-align: center;
+        padding: 30px;
+        background: #f8fafc;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+        background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: #6366f1;
+        margin-bottom: 20px;
+    }
+
+    .feature-item h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .feature-item p {
+        font-size: 0.95rem;
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    .figures-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .figure-card {
+        text-align: center;
+        padding: 30px 20px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 15px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .figure-card:hover {
+        border-color: #6366f1;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+    }
+
+    .figure-card i {
+        font-size: 2.5rem;
+        color: #6366f1;
+        margin-bottom: 15px;
+    }
+
+    .figure-card h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .figure-card p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .tech-item {
+        text-align: center;
+        padding: 35px 25px;
+        background: linear-gradient(135deg, #eef2ff 0%, #ddd6fe 100%);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .tech-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.2);
+    }
+
+    .tech-item i {
+        font-size: 3rem;
+        color: #6366f1;
+        margin-bottom: 20px;
+    }
+
+    .tech-item h5 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+
+    .tech-item p {
+        font-size: 0.95rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 60px 40px;
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+        border-radius: 25px;
+        margin-top: 60px;
+    }
+
+    .cta-section h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 30px;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 15px 50px;
+        background: white;
+        color: #6366f1;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        color: #4f46e5;
+    }
+
+    @@media (max-width: 768px) {
+        .gradient-text {
+            font-size: 2.5rem;
+        }
+
+        .content-card {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+
+        .features-grid,
+        .figures-grid,
+        .tech-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-section {
+            padding: 40px 20px;
+        }
+    }
+</style>
