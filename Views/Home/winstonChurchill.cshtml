@@ -9,34 +9,24 @@
 
 <div class="chat-page-container">
 
-    <!-- Header Area: Character Info -->
+    <!-- Header -->
     <div class="chat-header">
         <div class="character-avatar">
             <img src="~/images/winston churchill.jpg" alt="Winston Churchill" class="character-photo" />
         </div>
         <div class="character-info">
             <h2 class="character-name">Winston Churchill</h2>
-            <p class="character-bio">Prime Minister • Statesman • Orator</p>
-            <p class="character-quote">"Never give in, never give in, never, never, never, never—in nothing, great or small, large or petty—never give in except to convictions of honour and good sense."</p>
+            <p class="character-bio">Prime Minister • Wartime Leader • Orator</p>
+            <p class="character-quote">"If you’re going through hell, keep going."</p>
         </div>
     </div>
 
-    <!-- Main Chat Area -->
+    <!-- Messages -->
     <div class="messages-area" id="messages-area">
         @if (!SignInManager.IsSignedIn(User))
         {
-            <div class="alert alert-warning text-center" role="alert">
+            <div class="alert alert-warning text-center">
                 Please <a asp-area="Identity" asp-page="/Account/Login">log in</a> to chat with Winston Churchill.
-            </div>
-        }
-        else
-        {
-            <button class="clear-chat-btn" id="clear-chat-btn">
-                <i class="fas fa-trash-alt"></i> Clear Chat
-            </button>
-            <div class="message-bubble bot-message">
-                <p class="message-text">Good day. I am Winston Churchill, a servant of the Crown and a man who has seen a thing or two of the world's great struggles. I am ready to discuss war strategy, oratory, and the enduring spirit of leadership. Remember my creed: **"Never give in, never give in, never, never, never, never—in nothing, great or small, large or petty—never give in except to convictions of honour and good sense."** What challenge do you face that requires a steady hand and an unyielding will?</p>
-                <span class="message-time">@DateTime.Now.ToString("HH:mm")</span>
             </div>
         }
     </div>
@@ -46,7 +36,15 @@
         @if (SignInManager.IsSignedIn(User))
         {
             <div class="input-group">
-                <textarea placeholder="Message Winston Churchill..." class="chat-input" id="message-input" rows="1"></textarea>
+                <textarea id="message-input"
+                          class="chat-input"
+                          rows="1"
+                          placeholder="Message Winston Churchill..."></textarea>
+
+                <button class="clear-chat-mini" id="clear-chat-btn" title="Clear chat">
+                    <i class="fas fa-trash"></i>
+                </button>
+
                 <button class="send-button" id="send-button">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -55,7 +53,7 @@
         else
         {
             <div class="input-group">
-                <textarea placeholder="Log in to send messages..." class="chat-input" rows="1" disabled></textarea>
+                <textarea class="chat-input" rows="1" disabled placeholder="Log in to send messages..."></textarea>
                 <button class="send-button" disabled>
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -65,187 +63,108 @@
 </div>
 
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const messagesArea = document.getElementById("messages-area");
-            const sendButton = document.getElementById("send-button");
-            const messageInput = document.getElementById("message-input");
-            const characterName = "Winston Churchill"; // This should match the characterName in your controller
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-            function getCurrentTime(dateString) {
-                const date = new Date(dateString);
-                return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
-            }
+    const messagesArea = document.getElementById("messages-area");
+    const sendButton = document.getElementById("send-button");
+    const messageInput = document.getElementById("message-input");
+    const clearChatBtn = document.getElementById("clear-chat-btn");
+    const characterName = "Winston Churchill";
 
-            function appendMessage(text, type, timestamp, messageId = null) {
-                const bubble = document.createElement("div");
-                bubble.className = `message-bubble ${type}-message`;
-                if (messageId) {
-                    bubble.dataset.messageId = messageId;
-                }
+    const initialChurchillMessage =
+`Democracy, they say, is the worst form of government, except for all the others. I have faced the Hun in the field, stared into the black heart of tyranny across the Channel, and I tell you now—none of it prepared me for the exquisite torture of a committee meeting. A nation’s fate suspended on the debate of a man more concerned with the placement of a comma than the placement of a tank! We shall fight them on the beaches, yes, but by God, we shall also fight them in the sub-committee on budgetary oversight! They speak of 'nuance' and 'optics' while the world demands action. Give me a clear enemy, a bottle of brandy, and a bad map over a conference call with a man who says 'let's circle back' any day. Now, where is that confounded pickle?`;
 
-                const formattedText = text.replace(/\n/g, "<br>");
-                const deleteBtn = (type === "user" && messageId) 
-                    ? `<button class="delete-message-btn" onclick="deleteMessage(${messageId})"><i class="fas fa-trash"></i> Delete</button>` 
-                    : "";
-                
-                bubble.innerHTML = `<p class="message-text">${formattedText}</p><span class="message-time">${getCurrentTime(timestamp)} ${deleteBtn}</span>`;
+    function time(ts) {
+        const d = new Date(ts);
+        return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+    }
 
-                messagesArea.appendChild(bubble);
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            }
+    function appendMessage(text, type, ts, id = null) {
+        const bubble = document.createElement("div");
+        bubble.className = `message-bubble ${type}-message`;
+        if (id) bubble.dataset.messageId = id;
 
-            window.deleteMessage = async function(messageId) {
-                if (!confirm("Are you sure you want to delete this message?")) return;
+        bubble.innerHTML = `
+            <p class="message-text">${text.replace(/\n/g, "<br>")}</p>
+            <span class="message-time">${time(ts)}</span>
+        `;
+        messagesArea.appendChild(bubble);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
 
-                try {
-                    const response = await fetch(`/Chat/DeleteMessage?messageId=${messageId}`, {
-                        method: "DELETE",
-                        credentials: "same-origin"
-                    });
+    async function loadChatHistory() {
+        if (!@SignInManager.IsSignedIn(User).ToString().ToLower()) return;
 
-                    if (response.ok) {
-                        const bubble = document.querySelector(`[data-message-id="${messageId}"]`);
-                        if (bubble) bubble.remove();
-                    } else {
-                        console.error("Failed to delete message");
-                    }
-                } catch (error) {
-                    console.error("Error deleting message:", error);
-                }
-            }
+        const res = await fetch(`/Chat/GetChatHistory?characterName=${encodeURIComponent(characterName)}`);
+        if (!res.ok) return;
 
-            async function clearChat() {
-                if (!confirm("Are you sure you want to clear all messages? This action cannot be undone.")) return;
+        const history = await res.json();
+        messagesArea.innerHTML = "";
 
-                try {
-                    const response = await fetch(`/Chat/ClearChat?characterName=${encodeURIComponent(characterName)}`, {
-                        method: "DELETE",
-                        credentials: "same-origin"
-                    });
+        if (history.length === 0) {
+            appendMessage(initialChurchillMessage, "bot", new Date());
+            return;
+        }
 
-                    if (response.ok) {
-                        messagesArea.innerHTML = `
-                            <button class="clear-chat-btn" id="clear-chat-btn">
-                                <i class="fas fa-trash-alt"></i> Clear Chat
-                            </button>
-                            <div class="message-bubble bot-message">
-                                <p class="message-text">Good day. I am Winston Churchill, a servant of the Crown and a man who has seen a thing or two of the world's great struggles. I am ready to discuss war strategy, oratory, and the enduring spirit of leadership. Remember my creed: **"Never give in, never give in, never, never, never, never—in nothing, great or small, large or petty—never give in except to convictions of honour and good sense."** What challenge do you face that requires a steady hand and an unyielding will?</p>
-                                <span class="message-time">${getCurrentTime(new Date().toISOString())}</span>
-                            </div>
-                        `;
-                        // Re-attach event listener
-                        document.getElementById("clear-chat-btn").addEventListener("click", clearChat);
-                    } else {
-                        console.error("Failed to clear chat");
-                    }
-                } catch (error) {
-                    console.error("Error clearing chat:", error);
-                }
-            }
-
-            async function loadChatHistory() {
-                if (!@SignInManager.IsSignedIn(User).ToString().ToLower()) return;
-
-                try {
-                    const response = await fetch(`/Chat/GetChatHistory?characterName=${encodeURIComponent(characterName)}`);
-                    if (response.ok) {
-                        const history = await response.json();
-                        
-                        // Clear messages but keep the clear button
-                        const clearBtn = document.getElementById("clear-chat-btn");
-                        messagesArea.innerHTML = "";
-                        if (clearBtn) {
-                            messagesArea.appendChild(clearBtn);
-                        }
-
-                        history.forEach(msg => {
-                            const text = msg.messageContent || msg.MessageContent || "";
-                            const when = msg.timestamp || msg.Timestamp || new Date().toISOString();
-                            const isUser = (typeof msg.isUser !== 'undefined') ? msg.isUser : (typeof msg.IsUser !== 'undefined' ? msg.IsUser : true);
-                            const msgId = msg.id || msg.Id || null;
-                            appendMessage(text, isUser ? "user" : "bot", when, msgId);
-                        });
-                    } else {
-                        console.error("Failed to load chat history:", response.statusText);
-                    }
-                } catch (error) {
-                    console.error("Error loading chat history:", error);
-                }
-            }
-
-            async function sendMessage() {
-                const message = messageInput.value.trim();
-                if (!message) return;
-
-                appendMessage(message, "user", new Date().toISOString());
-                messageInput.value = "";
-                autoResizeTextarea();
-
-                // Show loading indicator
-                const loadingBubble = document.createElement("div");
-                loadingBubble.className = "message-bubble bot-message loading-message";
-                loadingBubble.innerHTML = `<p class="message-text"><span class="typing-indicator"><span></span><span></span><span></span></span></p>`;
-                messagesArea.appendChild(loadingBubble);
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-
-                try {
-                    const response = await fetch("/Chat/SendMessage", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        credentials: "same-origin",
-                        body: JSON.stringify({ characterName: characterName, messageContent: message })
-                    });
-
-                    // Remove loading indicator
-                    loadingBubble.remove();
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        const botResponse = data.reply || `I'm here, but I couldn't generate a reply.`;
-                        appendMessage(botResponse, "bot", new Date().toISOString());
-                    } else {
-                        console.error("Failed to send message:", response.statusText);
-                    }
-                } catch (error) {
-                    loadingBubble.remove();
-                    console.error("Error sending message:", error);
-                }
-            }
-
-            function autoResizeTextarea() {
-                if (messageInput) {
-                    messageInput.style.height = "auto";
-                    messageInput.style.height = (messageInput.scrollHeight) + "px";
-                }
-            }
-
-            if (sendButton && messageInput) {
-                sendButton.addEventListener("click", sendMessage);
-
-                messageInput.addEventListener("input", autoResizeTextarea);
-
-                messageInput.addEventListener("keydown", function (e) {
-                    if (e.key === "Enter") {
-                        if (e.shiftKey) {
-                            return;
-                        } else {
-                            e.preventDefault();
-                            sendMessage();
-                        }
-                    }
-                });
-            }
-
-            const clearChatBtn = document.getElementById("clear-chat-btn");
-            if (clearChatBtn) {
-                clearChatBtn.addEventListener("click", clearChat);
-            }
-
-            loadChatHistory();
-            autoResizeTextarea();
+        history.forEach(m => {
+            appendMessage(
+                m.messageContent || m.MessageContent,
+                m.isUser ? "user" : "bot",
+                m.timestamp || m.Timestamp,
+                m.id || m.Id
+            );
         });
-    </script>
+    }
+
+    async function sendMessage() {
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+
+        appendMessage(msg, "user", new Date());
+        messageInput.value = "";
+
+        const loader = document.createElement("div");
+        loader.className = "message-bubble bot-message";
+        loader.innerHTML = `<p class="message-text"><span class="typing-indicator"><span></span><span></span><span></span></span></p>`;
+        messagesArea.appendChild(loader);
+
+        const res = await fetch("/Chat/SendMessage", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ characterName, messageContent: msg })
+        });
+
+        loader.remove();
+
+        if (res.ok) {
+            const data = await res.json();
+            appendMessage(data.reply, "bot", new Date());
+        }
+    }
+
+    async function clearChat() {
+        if (!confirm("Clear chat?")) return;
+
+        await fetch(`/Chat/ClearChat?characterName=${encodeURIComponent(characterName)}`, {
+            method: "DELETE"
+        });
+
+        messagesArea.innerHTML = "";
+        appendMessage(initialChurchillMessage, "bot", new Date());
+    }
+
+    sendButton?.addEventListener("click", sendMessage);
+    clearChatBtn?.addEventListener("click", clearChat);
+
+    messageInput?.addEventListener("keydown", e => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    loadChatHistory();
+});
+</script>
 }

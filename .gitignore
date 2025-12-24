@@ -27,3 +27,6 @@ x86/
 
 # Sensitive files
 appsettings.Development.json
+appsettings.Development.json
+appsettings.json
+Program.cs

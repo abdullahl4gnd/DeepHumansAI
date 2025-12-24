@@ -9,9 +9,7 @@ using DeepHumans.Services; // AssistantService
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ======================================================
-// 🔹 DATABASE CONFIGURATION (MySQL)
-// ======================================================
+//  DATABASE CONFIGURATION 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -19,9 +17,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
-// ======================================================
-// 🔹 IDENTITY CONFIGURATION
-// ======================================================
+//  IDENTITY CONFIGURATION 
+/*
+This enables ASP.NET Identity, which handles:
+User registration
+Login / logout
+Password hashing
+Roles and permissions
+*/
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -46,9 +49,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// ======================================================
-// 🔹 SECURE COOKIE CONFIGURATION
-// ======================================================
+
+/* SECURE COOKIE CONFIGURATION
+   abdullah note : this will not work on localhost without https or real web app dont change it
+*/
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -66,9 +70,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// ======================================================
-// 🔹 ANTI-FORGERY TOKEN PROTECTION
-// ======================================================
+//  ANTI-FORGERY TOKEN PROTECTION
 builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -77,14 +79,10 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.Name = isDevelopment ? "DeepHumans.AntiForgery" : "__Host-DeepHumans.AntiForgery";
 });
 
-// ======================================================
-// 🔹 EMAIL SENDER REGISTRATION
-// ======================================================
+//  EMAIL SENDER REGISTRATION
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// ======================================================
-// 🔹 SESSION SUPPORT
-// ======================================================
+//  SESSION SUPPORT
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -93,26 +91,19 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// ======================================================
-// 🔹 MVC & RAZOR
-// ======================================================
+//  MVC & RAZOR
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-// ======================================================
-// 🔹 AI Assistant Service (OpenAI)
-// ======================================================
+//  AI Assistant Service (OpenAI)
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IAssistantService, AssistantService>();
 
-// ======================================================
-// 🔹 BUILD THE APP
-// ======================================================
+//  BUILD THE APP
 var app = builder.Build();
 
-// ======================================================
-// 🔹 MIDDLEWARE PIPELINE
-// ======================================================
+//  MIDDLEWARE PIPELINE
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -124,21 +115,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ✅ Order matters here
-app.UseSession();          // 1️⃣ Enable session
-app.UseAuthentication();   // 2️⃣ Enable authentication
-app.UseAuthorization();    // 3️⃣ Enable authorization
+app.UseSession();          
+app.UseAuthentication();   
+app.UseAuthorization();    
 
-// ======================================================
 // 🔹 ROUTING
-// ======================================================
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
-// ======================================================
 // 🔹 RUN THE APP
-// ======================================================
 app.Run();

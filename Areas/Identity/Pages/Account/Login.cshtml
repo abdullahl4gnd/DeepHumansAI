@@ -42,7 +42,9 @@
                     <input class="form-check-input" asp-for="Input.RememberMe" />
                     <span>@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
                 </label>
-                <a asp-page="./ForgotPassword" class="link-text">Forgot password?</a>
+
+                <!-- ✅ changed from ./ForgotPassword to ./ForgotPasswordViaCode -->
+                <a asp-page="./ForgotPasswordViaCode" class="link-text">Forgot password?</a>
             </div>
 
             <button id="login-submit" type="submit" class="primary-btn">

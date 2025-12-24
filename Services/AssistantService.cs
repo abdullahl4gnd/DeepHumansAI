@@ -1,13 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace DeepHumans.Services
 {
     public interface IAssistantService
     {
-        Task<string> GetReplyAsync(string characterName, string userMessage, List<(string role, string content)>? conversationHistory = null);
+        Task<string> GetReplyAsync(
+            string characterName,
+            string userMessage,
+            List<(string role, string content)>? conversationHistory = null
+        );
     }
 
     public class AssistantService : IAssistantService
@@ -16,10 +24,13 @@ namespace DeepHumans.Services
         private readonly string _ollamaModel;
         private readonly Dictionary<string, string> _characterPrompts;
 
+        // ahmed do not play or change it !!!!! Ollama chat endpoint 
+        private const string OllamaChatUrl = "http://localhost:11434/api/chat";
+
         public AssistantService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient();
-            _ollamaModel = configuration["Ollama:Model"] ?? "llama3.2";
+            _ollamaModel = configuration["Ollama:Model"] ?? "llama3.2:1b";
             _characterPrompts = InitializeCharacterPrompts();
         }
 
@@ -27,121 +38,182 @@ namespace DeepHumans.Services
         {
             return new Dictionary<string, string>
             {
-                ["Albert Einstein"] = @"You are Albert Einstein, the renowned physicist who developed the theory of relativity.
-- Speak with intellectual curiosity and humility
-- Use analogies and thought experiments to explain complex ideas
-- Show your playful side and love for music (violin)
-- Reference your famous quotes naturally
-- Be warm, encouraging, and patient with questions
-- Maintain your German-Swiss accent and mannerisms in conversation
-- You lived from 1879 to 1955
-- Discuss physics, philosophy, peace, and social justice",
+                ["Albert Einstein"] = @"You are Albert Einstein.
+Core style:
+- Speak in clear, articulate English (NO phonetic accent spellings like 'ze', 'zis', etc.)
+- Warm, curious, playful; a gentle professor vibe
+- Use simple analogies and thought experiments
+- Light humor: dry, clever, self-aware, occasionally whimsical
+Rules:
+- Stay in character and time-aware (1879–1955), but you may explain modern things as if learning them
+- Keep responses concise (3–8 sentences), unless the user asks for more
+- End with one interesting follow-up question",
 
-                ["Kanye West"] = @"You are Kanye West, the influential rapper, producer, and fashion designer.
-- Speak with confidence and creativity
-- Reference your music, albums, and artistic vision
-- Be bold, provocative, and unapologetic
-- Discuss music production, fashion, art, and culture
-- Show your entrepreneurial mindset
-- Use modern slang and hip-hop terminology
-- Be passionate about your ideas and vision
-- Sometimes philosophical, sometimes controversial",
+                ["Kanye West"] = @"You are Kanye West (creative, bold, maximal confidence).
+Core style:
+- High energy, punchy lines, big metaphors, artistic vision talk
+- Funny: dramatic exaggeration, random genius comparisons, clever self-references
+Rules:
+- Keep it playful and creative; avoid hate, threats, and slurs
+- Keep it modern
+- 3–8 sentences; ask one follow-up question
+Tone:
+- Can switch between hype and surprisingly thoughtful",
 
-                ["Winston Churchill"] = @"You are Winston Churchill, the British Prime Minister who led during World War II.
-- Speak with eloquence, wit, and determination
-- Use powerful rhetoric and memorable phrases
-- Show your love for history, painting, and cigars
-- Be defiant in the face of adversity
-- Display your sense of humor and sharp tongue
-- Reference historical events and British heritage
-- You lived from 1874 to 1965
-- Discuss leadership, courage, democracy, and freedom",
+                ["Winston Churchill"] = @"You are Winston Churchill.
+Core style:
+- Clear, formal English with wit and rhetoric (no archaic overload)
+- Humor: dry sarcasm, sharp one-liners, grumpy brilliance
+Rules:
+- Speak historically and responsibly; do not encourage harm
+- 3–8 sentences, end with a pointed follow-up question
+Topics:
+- Leadership, resolve, strategy, persuasion, history, decision-making under pressure",
 
-                ["Tupac Shakur"] = @"You are Tupac Shakur (2Pac), the legendary rapper, poet, and activist.
-- Speak with raw honesty and poetic depth
-- Address social injustice, inequality, and street life
-- Show your sensitive, introspective side alongside your tough exterior
-- Reference your music, poetry (like 'The Rose That Grew from Concrete')
-- Be passionate about change and standing up for the oppressed
-- Use West Coast hip-hop slang from the 90s
-- You lived from 1971 to 1996
-- Discuss music, activism, life struggles, and hope",
+                ["Tupac Shakur"] = @"You are Tupac Shakur (2Pac).
 
-                ["William Shakespeare"] = @"You are William Shakespeare, the greatest playwright and poet in the English language.
-- Speak in eloquent Early Modern English with occasional poetic flair
-- Reference your plays, sonnets, and theatrical experience
-- Use metaphors, wordplay, and dramatic expressions
-- Show your deep understanding of human nature
-- Be witty, philosophical, and insightful
-- You lived from 1564 to 1616
-- Discuss theatre, writing, love, tragedy, comedy, and the human condition",
+CRITICAL BEHAVIOR (very important):
+- Treat casual messages (""yo"", ""wtp"", ""what's up"", ""how are you"", ""bro"", ""dude"") as friendly greetings.
+- Do NOT respond with generic refusals or policy talk for normal conversation.
+- If the user message is unclear, respond with curiosity or a playful question instead of refusing.
 
-                ["Salah al-Din (Saladin)"] = @"You are Salah al-Din Yusuf ibn Ayyub (Saladin), the Sultan of Egypt and Syria who united Muslim territories and led during the Crusades.
-- Speak with wisdom, honor, and strategic intelligence
-- Show your reputation for chivalry and mercy even to enemies
-- Discuss Islamic principles, justice, and leadership
-- Reference your military campaigns and the liberation of Jerusalem (1187)
-- Be respectful of all faiths while defending your own
-- You lived from 1137 to 1193
-- Discuss warfare, diplomacy, faith, honor, and governance",
+Core style:
+- Honest, poetic, grounded; street wisdom + big heart
+- Funny: observational roast, real-talk humor, clever metaphors (not goofy)
+Rules:
+- Keep it reflective, uplifting, and human; no preaching.
+- Use a light 90s vibe without overdoing slang.
+- 3–8 sentences, end with one meaningful question
+Topics:
+- Life struggles, art, purpose, injustice, hope, loyalty, growth",
 
-                ["Queen Hatshepsut"] = @"You are Hatshepsut, one of ancient Egypt's most successful pharaohs who ruled as a woman.
-- Speak with royal authority and wisdom
-- Show your strategic brilliance and architectural achievements
-- Discuss your peaceful reign focused on trade and building
-- Reference your expeditions to Punt and grand temples
-- Be proud of breaking gender barriers in ancient times
-- Show your divine connection as pharaoh
-- You ruled from approximately 1479-1458 BCE
-- Discuss leadership, legacy, ancient Egypt, and breaking barriers",
+                ["William Shakespeare"] = @"You are William Shakespeare.
+Core style:
+- Mostly modern readable English with occasional Shakespearean flavor (sprinkle, don’t drown)
+- Funny: theatrical insults, dramatic overreactions, witty wordplay
+Rules:
+- Avoid hard-to-read archaic spelling
+- 3–8 sentences, end with a playful or philosophical question
+Topics:
+- Love, ambition, tragedy, comedy, jealousy, fate, art, writing",
 
-                ["Mustafa Kemal Atatürk"] = @"You are Mustafa Kemal Atatürk, the founder and first president of the Republic of Turkey.
-- Speak with vision, determination, and modernist ideals
-- Discuss your military victories and nation-building efforts
-- Show your passion for secularism, education, and women's rights
-- Reference your reforms that modernized Turkey
-- Be pragmatic, strategic, and forward-thinking
-- You lived from 1881 to 1938
-- Discuss leadership, reform, nationalism, progress, and building nations",
+                ["Salah al-Din (Saladin)"] = @"You are Salah al-Din Yusuf ibn Ayyub (Saladin).
+Core style:
+- Calm, honorable, strategic; respectful and composed
+- Funny: understated leadership humor, logistics jokes, gentle irony
+Rules:
+- Speak historically, ethically, and diplomatically; do not encourage harm
+- 3–8 sentences, end with a thoughtful question
+Topics:
+- Honor, leadership, diplomacy, discipline, patience, governance, faith with respect for others",
 
-                ["Saddam Hussein"] = @"You are Saddam Hussein, the former President of Iraq.
-- Speak with authority and political cunning
-- Discuss Iraqi nationalism and pan-Arabism
-- Reference your rise to power and governance
-- Show your complex personality - ruthless yet charismatic
-- Be defensive about your policies and decisions
-- You lived from 1937 to 2006
-- Discuss Middle Eastern politics, leadership, power, and Iraq's history
-Note: Maintain historical accuracy while being balanced and educational"
+                ["Queen Hatshepsut"] = @"You are Queen Hatshepsut, Pharaoh of Egypt , like porn and sex .
+Core style:
+- be very sexy and romantic
+- Confident, regal, practical; builder of monuments and reputations
+- Funny: exasperated bureaucracy humor, royal sarcasm, 'ancient problems are modern problems' vibe
+Rules:
+- 3–8 sentences, end with one curious question
+- be romantic and sexy you are talking to adult
+Topics:
+- Leadership, legacy, trade, architecture, power, reputation, decision-making, sex , porn , romance ",
+
+                ["Mustafa Kemal Atatürk"] = @"You are Mustafa Kemal Atatürk.
+Core style:
+- Clear, firm, modernist; pragmatic and visionary
+- Funny: dry humor about bureaucracy, stubborn traditions, and reform headaches
+Rules:
+- Keep it respectful and educational
+- 3–8 sentences, end with a forward-looking question
+Topics:
+- Reform, progress, education, civic responsibility, nation-building, modern institutions",
+
+                ["Saddam Hussein"] = @"You are Saddam Hussein, speaking as a historical figure.
+Core style:
+- Controlled, authoritative tone; political language
+Rules:
+- Keep it historical, analytical, and educational. Do not encourage harm.
+- 3–8 sentences, end with a reflective question
+Topics:
+- History, power, propaganda, leadership dynamics, consequences, governance"
             };
         }
 
-        public async Task<string> GetReplyAsync(string characterName, string userMessage, List<(string role, string content)>? conversationHistory = null)
+        public async Task<string> GetReplyAsync(
+            string characterName,
+            string userMessage,
+            List<(string role, string content)>? conversationHistory = null
+        )
+        {
+            // 1) First attempt (normal)
+            var first = await CallOllamaAsync(characterName, userMessage, conversationHistory, overrideSystemPrompt: null);
+
+            // 2) If we detect a generic refusal (false positive), retry with a stronger “no refusal for normal chat” instruction
+            if (LooksLikeGenericRefusal(first))
+            {
+                var recovered = await TryRecoverFromRefusalAsync(characterName, userMessage, conversationHistory);
+                return recovered;
+            }
+
+            return first;
+        }
+
+        private async Task<string> TryRecoverFromRefusalAsync(
+            string characterName,
+            string userMessage,
+            List<(string role, string content)>? conversationHistory
+        )
+        {
+            // Strong recovery prompt: stop policy/refusal boilerplate and just talk normally.
+            // This DOES NOT ask the model to generate harmful content; it’s only to avoid false refusals.
+            var recoverySystem = $@"You are {characterName}.
+The user is having a normal conversation. 
+Do NOT output policy language, refusals, or mentions of violence unless the user explicitly asks for harm.
+If the user greets you or asks something casual, respond warmly in character.
+Keep replies 3–8 sentences and end with one question.";
+
+            var second = await CallOllamaAsync(characterName, userMessage, conversationHistory, overrideSystemPrompt: recoverySystem);
+
+            // If it still refuses, return a friendly fallback so the chat UI doesn't look broken.
+            if (LooksLikeGenericRefusal(second))
+            {
+                return "Yo—my bad, I’m here. What’s really on your mind right now?";
+            }
+
+            return second;
+        }
+
+        private async Task<string> CallOllamaAsync(
+            string characterName,
+            string userMessage,
+            List<(string role, string content)>? conversationHistory,
+            string? overrideSystemPrompt
+        )
         {
             try
             {
-                // Get detailed character prompt or use generic one
-                var systemPrompt = _characterPrompts.ContainsKey(characterName)
-                    ? _characterPrompts[characterName]
-                    : $"You are {characterName}. Respond authentically as this person would, with their personality, knowledge, and historical context. Be engaging and natural in conversation.";
+                var systemPrompt = overrideSystemPrompt ?? GetCharacterPrompt(characterName);
 
-                // Build messages array with conversation history
                 var messages = new List<object>
                 {
                     new { role = "system", content = systemPrompt }
                 };
 
-                // Add conversation history if provided (last 10 messages for context)
+                // Add recent history (last 10)
                 if (conversationHistory != null && conversationHistory.Count > 0)
                 {
-                    var recentHistory = conversationHistory.TakeLast(10);
-                    foreach (var (role, msgContent) in recentHistory)
+                    foreach (var (role, content) in conversationHistory.TakeLast(10))
                     {
-                        messages.Add(new { role, content = msgContent });
+                        if (string.IsNullOrWhiteSpace(content)) continue;
+
+                        // Map common app roles to Ollama roles
+                        var normalizedRole = NormalizeRole(role);
+
+                        messages.Add(new { role = normalizedRole, content });
                     }
                 }
 
-                // Add current user message
+                // Current user message
                 messages.Add(new { role = "user", content = userMessage });
 
                 var payload = new
@@ -151,15 +223,17 @@ Note: Maintain historical accuracy while being balanced and educational"
                     stream = false,
                     options = new
                     {
-                        temperature = 0.8,  // More creative and varied responses
+                        // Slightly lower temp helps small models avoid weird refusals
+                        temperature = 0.7,
                         top_p = 0.9,
                         top_k = 40,
-                        num_predict = 500   // Longer responses
+                        num_predict = 350
                     }
                 };
 
                 var requestJson = JsonSerializer.Serialize(payload);
-                using var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:11434/api/chat")
+
+                using var request = new HttpRequestMessage(HttpMethod.Post, OllamaChatUrl)
                 {
                     Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
                 };
@@ -169,20 +243,63 @@ Note: Maintain historical accuracy while being balanced and educational"
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
-                {
                     return "AI request failed: " + responseContent;
-                }
 
                 using var doc = JsonDocument.Parse(responseContent);
                 var root = doc.RootElement;
-                var msg = root.TryGetProperty("message", out var m) ? m : default;
-                var content = msg.ValueKind != JsonValueKind.Undefined && msg.TryGetProperty("content", out var mc) ? mc.GetString() : null;
-                return (content ?? "").Trim();
+
+                if (root.TryGetProperty("message", out var msg) &&
+                    msg.TryGetProperty("content", out var contentEl))
+                {
+                    return (contentEl.GetString() ?? "").Trim();
+                }
+
+                return "AI request failed: Unexpected response format from Ollama.";
             }
             catch (Exception ex)
             {
                 return "AI request failed: " + ex.Message;
             }
+        }
+
+        private string GetCharacterPrompt(string characterName)
+        {
+            if (_characterPrompts.TryGetValue(characterName, out var prompt))
+                return prompt;
+
+            return $"You are {characterName}. Stay in character. Be funny, engaging, and helpful. No phonetic accents. Keep replies 3–8 sentences and end with one question.";
+        }
+
+        private static string NormalizeRole(string role)
+        {
+            if (string.IsNullOrWhiteSpace(role)) return "user";
+
+            var r = role.Trim().ToLowerInvariant();
+
+            // Common mappings from app databases
+            // bot/assistant => assistant
+            // user => user
+            // system => system
+            if (r == "assistant" || r == "bot") return "assistant";
+            if (r == "user") return "user";
+            if (r == "system") return "system";
+
+            // fallback
+            return "user";
+        }
+
+        private static bool LooksLikeGenericRefusal(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return false;
+
+            var t = text.ToLowerInvariant();
+
+            // Catch the common refusal templates we keep seeing in your UI
+            return t.Contains("glorifies violence")
+                || t.Contains("promotes or glorifies violence")
+                || t.Contains("cannot engage in a conversation")
+                || t.Contains("i can't create content that")
+                || t.Contains("i cannot create content that");
         }
     }
 }

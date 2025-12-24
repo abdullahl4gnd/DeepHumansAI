@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -19,72 +22,81 @@ namespace DeepHumans.Services
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var senderEmail = _configuration["EmailSettings:SenderEmail"];
-            var senderName = _configuration["EmailSettings:SenderName"];
+            var senderName = _configuration["EmailSettings:SenderName"] ?? "DeepHumans Support";
             var sendGridApiKey = _configuration["EmailSettings:SendGridApiKey"];
 
             Console.WriteLine("===============================================");
-            Console.WriteLine($"📧 EMAIL SENDING ATTEMPT");
+            Console.WriteLine("📧 EMAIL SENDING ATTEMPT");
             Console.WriteLine($"TO: {email}");
             Console.WriteLine($"SUBJECT: {subject}");
             Console.WriteLine($"SENDER: {senderEmail}");
-            Console.WriteLine($"SendGrid API Key: {(!string.IsNullOrWhiteSpace(sendGridApiKey) ? "✓ Configured" : "✗ Not configured")}");
+            Console.WriteLine($"SendGrid: {(string.IsNullOrWhiteSpace(sendGridApiKey) ? "❌ Disabled" : "✅ Enabled")}");
             Console.WriteLine("===============================================");
 
-            // Prefer SendGrid if API key is configured
+            // 1️ SENDGRID (PREFERRED)
             if (!string.IsNullOrWhiteSpace(sendGridApiKey))
             {
                 try
                 {
-                    var sgClient = new SendGridClient(sendGridApiKey);
-                    var from = new EmailAddress(senderEmail, string.IsNullOrWhiteSpace(senderName) ? "DeepHumans Support" : senderName);
+                    var client = new SendGridClient(sendGridApiKey);
+                    var from = new EmailAddress(senderEmail, senderName);
                     var to = new EmailAddress(email);
-                    // Generate a basic plain text fallback
-                    var plainText = System.Text.RegularExpressions.Regex.Replace(htmlMessage ?? string.Empty, "<[^>]*>", string.Empty);
-                    var msg = MailHelper.CreateSingleEmail(from, to, subject, plainText, htmlMessage);
-                    var response = await sgClient.SendEmailAsync(msg);
-                    
-                    Console.WriteLine($"✅ SendGrid Response: {response.StatusCode}");
-                    if (response.StatusCode != System.Net.HttpStatusCode.OK && 
-                        response.StatusCode != System.Net.HttpStatusCode.Accepted)
+
+                    var plainText = Regex.Replace(htmlMessage ?? string.Empty, "<[^>]+>", "");
+
+                    var msg = MailHelper.CreateSingleEmail(
+                        from,
+                        to,
+                        subject,
+                        plainText,
+                        htmlMessage
+                    );
+
+                    var response = await client.SendEmailAsync(msg);
+
+                    Console.WriteLine($"📨 SendGrid Status: {response.StatusCode}");
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.Accepted ||
+                        response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var body = await response.Body.ReadAsStringAsync();
-                        Console.WriteLine($"⚠️ SendGrid Error: {body}");
+                        Console.WriteLine("✅ Email sent successfully via SendGrid.");
+                        return;
                     }
-                    else
-                    {
-                        Console.WriteLine($"✅ Email sent successfully via SendGrid!");
-                    }
-                    return;
+
+                    var errorBody = await response.Body.ReadAsStringAsync();
+                    Console.WriteLine($"⚠️ SendGrid Error Body: {errorBody}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ SendGrid Error: {ex.Message}");
-                    throw;
+                    Console.WriteLine($"❌ SendGrid Exception: {ex.Message}");
+                    // Continue to SMTP fallback
                 }
             }
 
-            // Fallback to SMTP
+            // 2️⃣ SMTP FALLBACK (GMAIL)
             var smtpServer = _configuration["EmailSettings:SmtpServer"];
-            var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"] ?? "587");
-            var password = _configuration["EmailSettings:Password"];
+            var smtpPort = int.TryParse(_configuration["EmailSettings:SmtpPort"], out var port) ? port : 587;
+            var smtpPassword = _configuration["EmailSettings:Password"];
 
-            if (string.IsNullOrEmpty(smtpServer) || string.IsNullOrEmpty(senderEmail) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrWhiteSpace(smtpServer) ||
+                string.IsNullOrWhiteSpace(senderEmail) ||
+                string.IsNullOrWhiteSpace(smtpPassword))
             {
-                Console.WriteLine("⚠️ No email provider configured. Email not sent.");
-                Console.WriteLine($"MESSAGE PREVIEW: {htmlMessage}");
-                Console.WriteLine("===============================================");
+                Console.WriteLine("❌ SMTP is not configured. Email NOT sent.");
+                Console.WriteLine("MESSAGE CONTENT:");
+                Console.WriteLine(htmlMessage);
                 return;
             }
 
             try
             {
-                using var client = new SmtpClient(smtpServer, smtpPort)
+                using var smtpClient = new SmtpClient(smtpServer, smtpPort)
                 {
-                    Credentials = new NetworkCredential(senderEmail, password),
+                    Credentials = new NetworkCredential(senderEmail, smtpPassword),
                     EnableSsl = true
                 };
 
-                using var mailMessage = new MailMessage
+                using var mail = new MailMessage
                 {
                     From = new MailAddress(senderEmail, senderName),
                     Subject = subject,
@@ -92,14 +104,15 @@ namespace DeepHumans.Services
                     IsBodyHtml = true
                 };
 
-                mailMessage.To.Add(email);
+                mail.To.Add(email);
 
-                await client.SendMailAsync(mailMessage);
-                Console.WriteLine("✅ Email sent successfully via SMTP!");
+                await smtpClient.SendMailAsync(mail);
+
+                Console.WriteLine("✅ Email sent successfully via SMTP.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ SMTP Error: {ex.Message}");
+                Console.WriteLine($"❌ SMTP Exception: {ex.Message}");
                 throw;
             }
         }
